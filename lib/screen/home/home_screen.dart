@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -10,6 +11,7 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
+          height: screenHeight(context),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/ui/background/bg_cloud.png"),
@@ -20,27 +22,9 @@ class HomeScreen extends StatelessWidget {
             padding: EdgeInsets.only(left: 15, right: 15, top: 45),
             child: Column(
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "愛. 無煙",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Icon(Icons.notifications, size: 28),
-                        ),
-                      ),
-                    ],
-                  ),
+                ScreenHeader(
+                  title: "愛. 無煙",
+                  rightWidget: Icon(Icons.notifications, size: 28),
                 ),
                 Container(
                   width: double.infinity,
@@ -63,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      SizedBox(height: 40),
+                      SizedBox(height: 35),
                       Padding(
                         padding: EdgeInsets.all(10),
                         child: Container(
@@ -82,9 +66,11 @@ class HomeScreen extends StatelessWidget {
                       ),
                       Align(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/smoking-diary");
+                          },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryBackground,
+                            backgroundColor: primaryColor,
                             padding: EdgeInsets.symmetric(
                               vertical: 10,
                               horizontal: 25,

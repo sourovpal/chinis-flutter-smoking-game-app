@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:game_app/screen/home/home_screen.dart';
+import 'package:game_app/util/common_function.dart';
 
 class RootScreen extends StatelessWidget {
   const RootScreen({super.key});
@@ -8,7 +10,8 @@ class RootScreen extends StatelessWidget {
     return Scaffold(
       body: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, "/home");
+          // Navigator.pushNamed(context, "/home");
+          Navigator.push(context, PageSlideBottomToUp(page: HomeScreen()));
         },
         child: Container(
           width: double.infinity,
