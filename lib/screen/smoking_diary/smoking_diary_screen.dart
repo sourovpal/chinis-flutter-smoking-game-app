@@ -51,7 +51,7 @@ class SmikingDiaryScreen extends StatelessWidget {
                         SizedBox(height: 10),
                         TextField(
                           decoration: InputDecoration(
-                            hint: Text("Int"),
+                            hint: Text(""),
                             border: OutlineInputBorder(),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -82,7 +82,7 @@ class SmikingDiaryScreen extends StatelessWidget {
                         SizedBox(height: 10),
                         TextField(
                           decoration: InputDecoration(
-                            hint: Text("Int"),
+                            hint: Text(""),
                             border: OutlineInputBorder(),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -113,7 +113,7 @@ class SmikingDiaryScreen extends StatelessWidget {
                         SizedBox(height: 10),
                         TextField(
                           decoration: InputDecoration(
-                            hint: Text("Date"),
+                            hint: Text(""),
                             border: OutlineInputBorder(),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),

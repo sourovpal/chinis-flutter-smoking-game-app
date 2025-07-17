@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
+import 'package:game_app/screen/harm_smoking/harm_smoking_screen.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreen();
+}
+
+class _HomeScreen extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavbarMenu(),
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
@@ -77,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            "開始/唔小心食返",
+                            "開始",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 22,
@@ -94,49 +102,60 @@ class HomeScreen extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        height: 165,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              "assets/ui/background/bar_secret_with_text.png",
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageSlideBottomToUp(page: HarmSmokingScreen()),
+                          );
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 165,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                "assets/ui/background/bar_secret_with_text.png",
+                              ),
+                              fit: BoxFit.fitHeight,
                             ),
-                            fit: BoxFit.fitHeight,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 5,
+                                spreadRadius: 1,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
                         ),
                       ),
                     ),
                     SizedBox(width: 15),
                     Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        height: 165,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              "assets/ui/background/main_method_with_text.png",
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          width: double.infinity,
+                          height: 165,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                "assets/ui/background/main_method_with_text.png",
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 5,
+                                spreadRadius: 1,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -164,7 +183,6 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 100),
               ],
             ),
           ),
