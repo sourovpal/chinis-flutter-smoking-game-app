@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
-import 'package:game_app/screen/harm_smoking/harm_smoking_screen.dart';
+import 'package:game_app/screen/home/harm_smoking/harm_smoking_screen.dart';
+import 'package:game_app/screen/home/quit_smoking/quit_smoking_screen.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 
@@ -108,6 +109,7 @@ class _HomeScreen extends State<HomeScreen> {
                             context,
                             PageSlideBottomToUp(page: HarmSmokingScreen()),
                           );
+                          setBottomNavbar();
                         },
                         child: Container(
                           width: double.infinity,
@@ -135,7 +137,13 @@ class _HomeScreen extends State<HomeScreen> {
                     SizedBox(width: 15),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageSlideBottomToUp(page: QuitSmokingScreen()),
+                          );
+                          setBottomNavbar();
+                        },
                         child: Container(
                           width: double.infinity,
                           height: 165,

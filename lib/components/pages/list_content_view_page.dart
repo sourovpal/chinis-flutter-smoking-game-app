@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_app/screen/harm_smoking/harm_smoking_screen.dart';
+import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 
@@ -8,14 +8,17 @@ class ListContentViewPage extends StatelessWidget {
     super.key,
     required this.title,
     required this.content,
+    required this.barImage,
   });
 
   final String title;
   final String content;
+  final String barImage;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavbarMenu(),
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
@@ -34,6 +37,8 @@ class ListContentViewPage extends StatelessWidget {
                   title: title,
                   rightWidget: ElevatedButton.icon(
                     onPressed: () {
+                      setBottomNavbar(index: 2);
+                      print("back------------");
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
@@ -63,9 +68,7 @@ class ListContentViewPage extends StatelessWidget {
                 width: double.infinity,
                 height: 100,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/ui/background/bar_secret.png"),
-                  ),
+                  image: DecorationImage(image: AssetImage(barImage)),
                 ),
               ),
               SizedBox(height: 15),

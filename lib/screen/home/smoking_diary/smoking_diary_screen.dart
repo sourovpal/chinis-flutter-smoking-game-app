@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 
@@ -8,6 +9,7 @@ class SmikingDiaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavbarMenu(),
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,

@@ -71,7 +71,7 @@ class ScreenHeader extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
             ),
           ),
           Expanded(
