@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:game_app/components/pages/list_content_view_page.dart';
+import 'package:game_app/screen/achievements/achievements_screen.dart';
+import 'package:game_app/screen/smoking_addiction/smoking_addiction_screen.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 
@@ -15,8 +17,26 @@ class BottomNavbarMenu extends StatelessWidget {
   BottomNavbarMenu({super.key});
 
   final List<Map<String, dynamic>> menuItems = [
-    {"label": "我的成就", "icon": "award", "handler": (BuildContext context) {}},
-    {"label": "煙癮測試", "icon": "graph", "handler": (BuildContext context) {}},
+    {
+      "label": "我的成就",
+      "icon": "award",
+      "handler": (BuildContext context) {
+        Navigator.push(
+          context,
+          PageSlideBottomToUp(page: AchievementsScreen()),
+        );
+      },
+    },
+    {
+      "label": "煙癮測試",
+      "icon": "graph",
+      "handler": (BuildContext context) {
+        Navigator.push(
+          context,
+          PageSlideBottomToUp(page: SmokingAddictionScreen()),
+        );
+      },
+    },
     {
       "label": "主頁",
       "icon": "home",

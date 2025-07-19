@@ -7,6 +7,6 @@ import 'package:game_app/screen/home/smoking_diary/smoking_diary_screen.dart';
 final Map<String, WidgetBuilder> appRoutes = {
   "/": (context) => RootScreen(),
   "/home": (context) => HomeScreen(),
-  "/smoking-diary": (context) => SmikingDiaryScreen(),
+  "/smoking-diary": (context) => SmokingDiaryScreen(),
   "/harm-smoking": (context) => HarmSmokingScreen(),
 };

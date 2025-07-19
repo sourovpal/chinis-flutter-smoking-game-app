@@ -3,8 +3,8 @@ import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 
-class SmikingDiaryScreen extends StatelessWidget {
-  const SmikingDiaryScreen({super.key});
+class SmokingDiaryScreen extends StatelessWidget {
+  const SmokingDiaryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

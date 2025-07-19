@@ -15,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreen extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    setBottomNavbar(index: 2);
+
     return Scaffold(
       bottomNavigationBar: BottomNavbarMenu(),
       body: SingleChildScrollView(
@@ -39,10 +41,11 @@ class _HomeScreen extends State<HomeScreen> {
                   width: double.infinity,
                   height: 225,
                   decoration: BoxDecoration(
+                    color: Colors.white,
                     image: DecorationImage(
                       image: AssetImage("assets/ui/background/main_diary.png"),
                       fit: BoxFit.cover,
-                      alignment: Alignment(0, 1.3),
+                      alignment: Alignment(0, 0.3),
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     boxShadow: [
@@ -56,7 +59,7 @@ class _HomeScreen extends State<HomeScreen> {
                   ),
                   child: Column(
                     children: [
-                      SizedBox(height: 35),
+                      SizedBox(height: 45),
                       Padding(
                         padding: EdgeInsets.all(10),
                         child: Container(
@@ -76,6 +79,7 @@ class _HomeScreen extends State<HomeScreen> {
                       Align(
                         child: ElevatedButton(
                           onPressed: () {
+                            setBottomNavbar();
                             Navigator.pushNamed(context, "/smoking-diary");
                           },
                           style: ElevatedButton.styleFrom(
@@ -115,11 +119,12 @@ class _HomeScreen extends State<HomeScreen> {
                           width: double.infinity,
                           height: 165,
                           decoration: BoxDecoration(
+                            color: Colors.white,
                             image: DecorationImage(
                               image: AssetImage(
                                 "assets/ui/background/bar_secret_with_text.png",
                               ),
-                              fit: BoxFit.fitHeight,
+                              fit: BoxFit.cover,
                             ),
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             boxShadow: [
@@ -148,6 +153,7 @@ class _HomeScreen extends State<HomeScreen> {
                           width: double.infinity,
                           height: 165,
                           decoration: BoxDecoration(
+                            color: Colors.white,
                             image: DecorationImage(
                               image: AssetImage(
                                 "assets/ui/background/main_method_with_text.png",
@@ -174,11 +180,13 @@ class _HomeScreen extends State<HomeScreen> {
                   width: double.infinity,
                   height: 155,
                   decoration: BoxDecoration(
+                    color: Colors.white,
                     image: DecorationImage(
                       image: AssetImage(
                         "assets/ui/background/main_game_with_text.png",
                       ),
                       fit: BoxFit.cover,
+                      alignment: Alignment(0, 1),
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     boxShadow: [
