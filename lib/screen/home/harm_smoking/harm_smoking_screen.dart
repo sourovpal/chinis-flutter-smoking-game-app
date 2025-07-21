@@ -37,6 +37,7 @@ class HarmSmokingScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/ui/background/bar_secret.png"),
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),

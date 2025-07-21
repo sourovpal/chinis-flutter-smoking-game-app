@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Color Cancel Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      height: 100vh;
+    }
+
+    #bg {
+      /* width: 375px;
+      height: 667px;
+      background: url("bg.png") center/cover no-repeat;
+      border-radius: 15px;
+      margin: 0 auto 20px auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 20px; */
+    }
+
+    .margin {
+      width: 350px;
+    }
+
+    #info {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #grid {
+      display: grid;
+      aspect-ratio: 1 / 1;
+      width: 350px;
+      max-width: 95%;
+      margin: 0 auto;
+    }
+
+    .box {
+      border: 1px solid #444;
+      margin: 0;
+      box-sizing: border-box;
+      cursor: pointer;
+      user-select: none;
+      background-color: black;
+      filter: brightness(70%);
+       box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.6);
+      transition: transform 0.1s ease;
+    }
+
+    .target-color-box {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin: 0 3px;
+      border: 1px solid #444;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 8px 20px;
+      font-size: 16px;
+    }
+
+    #popup {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgb(137, 156, 216);
+      color: white;
+      padding: 20px 30px;
+      font-size: 25px;
+      display: none;
+      z-index: 999;
+      border-radius: 10px;
+      animation-duration: 0.5s;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes popupShow {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @keyframes popupHide {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    }
+    #replayBtn{
+  margin-top: 50px;
+  margin-left: 90px;
+  padding: 10px 25px;
+  font-size: 18px;
+  background-color: #899CD8; /* Green background */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  align-items: center;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#replayBtn:hover {
+  background-color: #999CD9;
+  transform: scale(1.05);
+}
+
+  </style>
+</head>
+<body>
+<div id="bg">
+  <audio id="clickSound" src="audio.wav" preload="auto"></audio>
+  <div class="margin">
+    <div id="popup"></div>
+    <div id="info">
+      關卡:<span id="level">1</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+      <span id="timer">3:00</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+      分數: <span id="score">0</span>
+    </div>
+    <div id="grid"></div>
+    <p style="text-align: center">目標: <span id="targetColor"></span></p>
+<button id="replayBtn" onclick="replayGame()" style="display:none; text-align: center">再玩一次</button>
+
+
+  </div>
+
+</div>
+<script>
+  const grid = document.getElementById("grid");
+  const levelSpan = document.getElementById("level");
+  const targetColorSpan = document.getElementById("targetColor");
+  const scoreSpan = document.getElementById("score");
+  const timerSpan = document.getElementById("timer");
+  const popup = document.getElementById("popup");
+  const clickSound = document.getElementById("clickSound");
+  const replayBtn = document.getElementById("replayBtn");
+
+  let level = 1;
+  let score = 0;
+  let gridSize = 5;
+  let boxes = [];
+  let cancelledCount = 0;
+  let gameInterval, shuffleInterval;
+  let timeLeft = 180;
+  let timerStarted = false;
+  let gameActive = true;
+  let timerPaused = false;
+
+  const targetColors = [
+    { name: "Burgandi", color: "#B499A7" },
+    { name: "Peach", color: "#FC86A2" },
+    { name: "li8brown", color: "#C57168" },
+    { name: "Cute-Pink", color: "#ffe4e1" },
+    { name: "Purple", color: "#AA80AC" },
+    { name: "lightblue", color: "#41B4C7" },
+    { name: "Lilac", color: "#899CD8" },
+    { name: "Blue", color: "#0370DE" },
+    { name: "Green", color: "#1D5652" },
+    { name: "Pink", color: "#ff69b4" },
+  ];
+
+  function getGridSize(level) {
+    if (level >= 21) return 7;
+    if (level >= 11) return 6;
+    return 5;
+  }
+
+  function getCurrentTargets() {
+    const count = level <= 10 ? 1 : level <= 20 ? 2 : 3;
+    const startIndex = (level - 1) % (targetColors.length - count + 1);
+    return targetColors.slice(startIndex, startIndex + count);
+  }
+
+  function calculateShuffleLimit() {
+    const totalTargetCount = getCurrentTargets().length * 25;
+    const unclickedCount = boxes.filter(b => b.dataset.clicked === "false").length;
+    const remaining = totalTargetCount - cancelledCount;
+    const ratio = remaining / totalTargetCount;
+    return Math.max(7, Math.ceil(unclickedCount * ratio * 0.5));
+  }
+
+  function getShuffleIntervalTime() {
+    return level > 2 ? 3000 : 5000;
+  }
+
+  const nonTargetColors = [
+  "#f8c471", "#d2b4de", "#f5f5f5", "#d7dbdd", "#f0b27a  ",
+  "#bb8fce", "#c0c0c0", "#f4d03f", "#f39c12", "#f5b041", 
+];
+
+function shuffleColors() {
+  if (!gameActive) return;
+
+  const targets = getCurrentTargets();
+  const targetBlocksNeeded = 12 * targets.length;
+  const remainingToCancel = targetBlocksNeeded - cancelledCount;
+
+  let unclickedBoxes = boxes.filter(box => box.dataset.clicked === "false");
+
+  const nonTargetColor = nonTargetColors[(level - 1) % nonTargetColors.length] || "#ccc";
+
+  // Clear all unclicked boxes first
+  unclickedBoxes.forEach(box => {
+    box.style.backgroundColor = nonTargetColor;
+    box.style.filter = "none";
+    box.dataset.isTarget = "false";
+    box.dataset.targetColor = "";
+  });
+
+  if (unclickedBoxes.length === 0 || remainingToCancel <= 0) return;
+
+  // Prepare new shuffled colors needed
+  const newColors = [];
+  for (let i = 0; i < remainingToCancel; i++) {
+    newColors.push(targets[i % targets.length]);
+  }
+
+  // Shuffle colors array
+  for (let i = newColors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newColors[i], newColors[j]] = [newColors[j], newColors[i]];
+  }
+
+  // Randomly assign to unclicked boxes
+  for (let i = 0; i < remainingToCancel && unclickedBoxes.length > 0; i++) {
+    const randIndex = Math.floor(Math.random() * unclickedBoxes.length);
+    const box = unclickedBoxes.splice(randIndex, 1)[0];
+
+    box.style.backgroundColor = newColors[i].color;
+    box.style.filter = "none";
+    box.dataset.isTarget = "true";
+    box.dataset.targetColor = newColors[i].color;
+  }
+}
+
+  function updateUI() {
+    levelSpan.textContent = level;
+    scoreSpan.textContent = score;
+    timerSpan.textContent = `${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`;
+    const targets = getCurrentTargets();
+    targetColorSpan.innerHTML = targets.map(t => `<span class="target-color-box" style="background:${t.color}"></span>`).join("");
+  }
+
+  function createGrid() {
+    grid.innerHTML = "";
+    boxes = [];
+    gridSize = getGridSize(level);
+    grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+    grid.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+
+    const total = gridSize * gridSize;
+    for (let i = 0; i < total; i++) {
+      const box = document.createElement("div");
+      box.className = "box";
+      box.dataset.clicked = "false";
+      box.dataset.isTarget = "false";
+
+      box.addEventListener("click", () => {
+        if (!gameActive || box.dataset.clicked === "true") return;
+
+        // Start timer on very first click
+     // Start timer on very first click
+if (!timerStarted) {
+  startTimer();
+  timerStarted = true;
+}
+
+
+        if (box.dataset.isTarget === "true") {
+          clickSound.currentTime = 0;
+          clickSound.play();
+          box.style.backgroundColor = "black";
+          box.style.filter = "brightness(70%)";
+          box.dataset.clicked = "true";
+          score++;
+          cancelledCount++;
+          updateUI();
+
+          if (cancelledCount >= getCurrentTargets().length * 12) {
+            if (level >= 30) endGame();
+            else {
+              gameActive = false;
+              clearInterval(shuffleInterval);
+              showLevelPopup(level + 1, () => {
+                level++;
+                cancelledCount = 0;
+                gameActive = true;
+                createGrid();
+                updateUI();
+                shuffleColors();
+                shuffleInterval = setInterval(shuffleColors, getShuffleIntervalTime());
+              });
+            }
+          }
+        }
+      });
+
+      grid.appendChild(box);
+      boxes.push(box);
+    }
+  }
+function showLevelPopup(nextLevel, callback) {
+    timerPaused = true;
+    popup.innerText = `關卡 ${nextLevel}`;
+    popup.style.display = "block";
+    popup.style.animationName = "popupShow";
+    setTimeout(() => {
+      popup.innerText = "開始！";
+      setTimeout(() => {
+        popup.style.animationName = "popupHide";
+        popup.addEventListener("animationend", () => {
+          popup.style.display = "none";
+          timerPaused = false;
+          callback();
+        }, { once: true });
+      }, 1000);
+    }, 2000);
+  }
+
+
+function startTimer() {
+  if (gameInterval) clearInterval(gameInterval); // Clear existing timer if any
+  gameInterval = setInterval(() => {
+    if (!timerPaused) {
+      if (timeLeft <= 0) endGame();
+      else {
+        timeLeft--;
+        updateUI();
+      }
+    }
+  }, 1000);
+}
+function endGame() {
+  clearInterval(gameInterval);
+  clearInterval(shuffleInterval);
+  gameActive = false;
+  popup.innerText = `遊戲結束！\n你的最終分數: ${score}`;
+  popup.style.display = "block";
+  popup.style.animation = "none";
+  popup.style.opacity = "1";
+  popup.style.transform = "translate(-50%, -50%) scale(1)";
+  replayBtn.style.display = "inline-block"; // Show the replay button
+}
+
+replayBtn.addEventListener("click", () => {
+  // Reset game state
+  level = 1;
+  score = 0;
+  timeLeft = 180;
+  timerStarted = false;
+  gameActive = true;
+  cancelledCount = 0;
+  popup.style.display = "none";
+  replayBtn.style.display = "none";
+
+  // ✅ Clear any old timer interval
+  clearInterval(gameInterval);
+  gameInterval = null; // ✅ Reset the interval flag
+
+  clearInterval(shuffleInterval);
+
+  createGrid();
+  updateUI();
+  shuffleColors();
+  showLevelPopup(1, () => {
+    shuffleInterval = setInterval(shuffleColors, getShuffleIntervalTime());
+    startTimer(); // ✅ Will now only run once
+    timerStarted = true;
+  });
+});
+
+window.onload = () => {
+  createGrid();
+  updateUI();
+  shuffleColors();
+  showLevelPopup(1, () => {
+    shuffleInterval = setInterval(shuffleColors, getShuffleIntervalTime());
+    startTimer();
+    timerStarted = true;
+  });
+};
+
+ 
+</script>
+
+
+</body>
+</html>

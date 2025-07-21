@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
+import 'package:game_app/screen/home/game/game_screen.dart';
 import 'package:game_app/screen/home/harm_smoking/harm_smoking_screen.dart';
+import 'package:game_app/screen/home/notifications/notification_screen.dart';
 import 'package:game_app/screen/home/quit_smoking/quit_smoking_screen.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
@@ -35,17 +37,25 @@ class _HomeScreen extends State<HomeScreen> {
               children: [
                 ScreenHeader(
                   title: "愛. 無煙",
-                  rightWidget: Icon(Icons.notifications, size: 28),
+                  rightWidget: GestureDetector(
+                    onTap: () {
+                      setBottomNavbar();
+                      Navigator.push(
+                        context,
+                        PageSlideBottomToUp(page: NotificationScreen()),
+                      );
+                    },
+                    child: Icon(Icons.notifications, size: 28),
+                  ),
                 ),
                 Container(
                   width: double.infinity,
-                  height: 225,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     image: DecorationImage(
                       image: AssetImage("assets/ui/background/main_diary.png"),
-                      fit: BoxFit.cover,
-                      alignment: Alignment(0, 0.3),
+                      fit: BoxFit.fill,
+                      alignment: Alignment(0, 0),
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     boxShadow: [
@@ -85,7 +95,7 @@ class _HomeScreen extends State<HomeScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
                             padding: EdgeInsets.symmetric(
-                              vertical: 10,
+                              vertical: 8,
                               horizontal: 25,
                             ),
                           ),
@@ -100,6 +110,7 @@ class _HomeScreen extends State<HomeScreen> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -143,11 +154,11 @@ class _HomeScreen extends State<HomeScreen> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
+                          setBottomNavbar();
                           Navigator.push(
                             context,
                             PageSlideBottomToUp(page: QuitSmokingScreen()),
                           );
-                          setBottomNavbar();
                         },
                         child: Container(
                           width: double.infinity,
@@ -176,27 +187,36 @@ class _HomeScreen extends State<HomeScreen> {
                   ],
                 ),
                 SizedBox(height: 15),
-                Container(
-                  width: double.infinity,
-                  height: 155,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    image: DecorationImage(
-                      image: AssetImage(
-                        "assets/ui/background/main_game_with_text.png",
+                GestureDetector(
+                  onTap: () {
+                    setBottomNavbar();
+                    Navigator.push(
+                      context,
+                      PageSlideBottomToUp(page: GameScreen()),
+                    );
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 155,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      image: DecorationImage(
+                        image: AssetImage(
+                          "assets/ui/background/main_game_with_text.png",
+                        ),
+                        fit: BoxFit.cover,
+                        alignment: Alignment(0, 1),
                       ),
-                      fit: BoxFit.cover,
-                      alignment: Alignment(0, 1),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 5,
+                          spreadRadius: 1,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 5,
-                        spreadRadius: 1,
-                        offset: Offset(0, 1),
-                      ),
-                    ],
                   ),
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
+import 'package:game_app/screen/smoking_addiction/result/result_screen.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 
@@ -165,7 +166,12 @@ class _SmokingAddictionScreenState extends State<SmokingAddictionScreen> {
                 child: Padding(
                   padding: EdgeInsets.only(left: 15, right: 15),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageSlideBottomToUp(page: ResultScreen()),  
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       backgroundColor: Colors.black,

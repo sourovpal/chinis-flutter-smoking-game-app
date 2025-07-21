@@ -38,6 +38,7 @@ class QuitSmokingScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/ui/background/bar_method.png"),
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),

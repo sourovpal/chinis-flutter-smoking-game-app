@@ -1,27 +1,29 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:game_app/components/pages/list_content_view_page.dart';
 import 'package:game_app/screen/achievements/achievements_screen.dart';
+import 'package:game_app/screen/contact/contact_screen.dart';
+import 'package:game_app/screen/home/home_screen.dart';
 import 'package:game_app/screen/smoking_addiction/smoking_addiction_screen.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// class BottomNavbarMenu extends StatefulWidget {
-//   const BottomNavbarMenu({super.key});
+class BottomNavbarMenu extends StatefulWidget {
+  const BottomNavbarMenu({super.key});
 
-//   @override
-//   State<BottomNavbarMenu> createState() => _BottomNavbarMenu();
-// }
+  @override
+  State<BottomNavbarMenu> createState() => _BottomNavbarMenu();
+}
 
-// class _BottomNavbarMenu extends State<BottomNavbarMenu> {
-class BottomNavbarMenu extends StatelessWidget {
-  BottomNavbarMenu({super.key});
-
+class _BottomNavbarMenu extends State<BottomNavbarMenu> {
   final List<Map<String, dynamic>> menuItems = [
     {
       "label": "我的成就",
       "icon": "award",
       "handler": (BuildContext context) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           PageSlideBottomToUp(page: AchievementsScreen()),
         );
@@ -31,7 +33,7 @@ class BottomNavbarMenu extends StatelessWidget {
       "label": "煙癮測試",
       "icon": "graph",
       "handler": (BuildContext context) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           PageSlideBottomToUp(page: SmokingAddictionScreen()),
         );
@@ -41,26 +43,49 @@ class BottomNavbarMenu extends StatelessWidget {
       "label": "主頁",
       "icon": "home",
       "handler": (BuildContext context) {
-        Navigator.pushNamed(context, "/home");
+        Navigator.pushReplacement(
+          context,
+          PageSlideBottomToUp(page: HomeScreen()),
+        );
       },
     },
     {
       "label": "計劃",
       "icon": "book",
-      "handler": (BuildContext context) {
-        Navigator.push(
+      "handler": (BuildContext context) async {
+        final prefs = await SharedPreferences.getInstance();
+
+        Map<String, dynamic> section = {"content": "Demo"};
+
+        String? jsonString = prefs.getString('api_sections');
+        if (jsonString != null) {
+          var sections = await jsonDecode(jsonString);
+          section = sections["love_smoke_project"];
+        }
+
+        Navigator.pushReplacement(
           context,
           PageSlideBottomToUp(
             page: ListContentViewPage(
               title: "「愛．無煙」計劃",
-              content: "Html Content",
+              content: section["content"] ?? "",
               barImage: "assets/ui/background/bar_about.png",
+              isBack: false,
             ),
           ),
         );
       },
     },
-    {"label": "聯絡", "icon": "edit", "handler": (BuildContext context) {}},
+    {
+      "label": "聯絡",
+      "icon": "edit",
+      "handler": (BuildContext context) {
+        Navigator.pushReplacement(
+          context,
+          PageSlideBottomToUp(page: ContactScreen()),
+        );
+      },
+    },
   ];
 
   Widget navMenu(
@@ -74,7 +99,7 @@ class BottomNavbarMenu extends StatelessWidget {
       flex: 1,
       child: GestureDetector(
         onTap: () {
-          if (navCurrentIndex == index) return;
+          // if (navCurrentIndex == index) return;
           navCurrentIndex = index;
           handler(context);
         },
@@ -87,8 +112,8 @@ class BottomNavbarMenu extends StatelessWidget {
             children: [
               Image.asset(
                 "assets/ui/nav/$icon.png",
-                width: 20,
-                height: 20,
+                width: 25,
+                height: 25,
                 color: (index == navCurrentIndex)
                     ? primaryColor
                     : Colors.grey[500],
@@ -117,7 +142,7 @@ class BottomNavbarMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 55,
+      height: 60,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -129,7 +154,7 @@ class BottomNavbarMenu extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
+      child: Container(
         padding: EdgeInsets.only(top: 8, bottom: 6, left: 10, right: 10),
         child: Row(
           children: menuItems.asMap().entries.map((entrie) {

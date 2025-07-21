@@ -10,7 +10,6 @@ class RootScreen extends StatelessWidget {
     return Scaffold(
       body: GestureDetector(
         onTap: () {
-          // Navigator.pushNamed(context, "/home");
           Navigator.push(context, PageSlideBottomToUp(page: HomeScreen()));
         },
         child: Container(

@@ -32,6 +32,7 @@ class SmokingDiaryScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/ui/background/bar_diary.png"),
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),
