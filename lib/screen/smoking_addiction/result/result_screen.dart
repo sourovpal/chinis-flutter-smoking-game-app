@@ -4,13 +4,44 @@ import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 
 class ResultScreen extends StatefulWidget {
-  const ResultScreen({super.key});
+  const ResultScreen({super.key, required this.optionResult});
+  final int optionResult;
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();
 }
 
 class _ResultScreenState extends State<ResultScreen> {
+  Map<String, dynamic> attributes = {
+    "title": "較輕",
+    "description": "您對尼古丁的依賴程度仍然很低。您應該在依賴程度提高之前立即採取行動。",
+    "primary": Colors.green,
+    "secondary": Colors.green[700],
+  };
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.optionResult >= 5) {
+      attributes = {
+        "title": "偏高",
+        "description":
+            "您對尼古丁的依賴程度中等。如果您不盡快戒煙，您對尼古丁的依賴程度將會增加，直到您可能嚴重上癮。立即採取行動，結束對尼古丁的依賴。",
+        "primary": Colors.red,
+        "secondary": Colors.red[700],
+      };
+    } else if (widget.optionResult >= 3) {
+      attributes = {
+        "title": "中等",
+        "description":
+            "您的依賴程度很高。您無法控制吸煙-它可以控制您！當您決定戒煙時，您可以嘗試用尼古丁替代或其他藥物，以幫助您戒掉煙癮。",
+        "primary": Colors.orange,
+        "secondary": Colors.orange[700],
+      };
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +80,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   width: (screenWidth(context) / 4) * 3,
                   constraints: BoxConstraints(minHeight: 300),
                   decoration: BoxDecoration(
-                    color: Colors.red,
+                    color: attributes["primary"],
                     borderRadius: BorderRadius.circular(10),
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -59,12 +90,12 @@ class _ResultScreenState extends State<ResultScreen> {
                         width: double.infinity,
                         height: 80,
                         decoration: BoxDecoration(
-                          color: Colors.red[900],
+                          color: attributes["secondary"],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
                           child: Text(
-                            "偏高",
+                            attributes["title"],
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 28,
@@ -75,7 +106,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       ),
                       SizedBox(height: 20),
                       Text(
-                        """您的依賴程度很高。您無法控制 吸煙。它可以控制您！當您決定 戒煙時，您可以嘗試用尼古丁替 代或其他藥物，以幫助您戒掉煙 癮。""",
+                        attributes["description"],
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                     ],

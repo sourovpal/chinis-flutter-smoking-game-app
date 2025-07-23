@@ -1,17 +1,51 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/components/pages/list_content_view_page.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HarmSmokingScreen extends StatelessWidget {
+class HarmSmokingScreen extends StatefulWidget {
   const HarmSmokingScreen({super.key});
+
+  @override
+  State<HarmSmokingScreen> createState() => _HarmSmokingScreenState();
+}
+
+class _HarmSmokingScreenState extends State<HarmSmokingScreen> {
+  Map<String, dynamic> sections = {};
+
+  @override
+  void initState() {
+    super.initState();
+    loadData(); // async function call
+  }
+
+  Future<void> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('api_sections');
+    if (jsonString != null) {
+      setState(() {
+        sections = jsonDecode(jsonString);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> items = [
-      {"label": "一手煙", "icon": Icons.keyboard_arrow_right_sharp},
-      {"label": "二、三手煙", "icon": Icons.keyboard_arrow_right_sharp},
+      {
+        "section": "first_hand_smoke",
+        "label": "一手煙",
+        "icon": Icons.keyboard_arrow_right_sharp,
+      },
+      {
+        "section": "second_third_hand_smoke",
+        "label": "二、三手煙",
+        "icon": Icons.keyboard_arrow_right_sharp,
+      },
     ];
     return Scaffold(
       bottomNavigationBar: BottomNavbarMenu(),
@@ -58,7 +92,7 @@ class HarmSmokingScreen extends StatelessWidget {
                             page: ListContentViewPage(
                               title: item['label'],
                               content:
-                                  "(HTML CONTENT) Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                                  sections[item["section"]]["content"] ?? "",
                               barImage: "assets/ui/background/bar_secret.png",
                             ),
                           ),

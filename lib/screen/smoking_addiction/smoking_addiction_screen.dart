@@ -12,27 +12,30 @@ class SmokingAddictionScreen extends StatefulWidget {
 }
 
 class _SmokingAddictionScreenState extends State<SmokingAddictionScreen> {
-  Map<String, String> optionValues = {};
+  Map<String, int> optionValues = {
+    "first_smoke_time": 3,
+    "total_cigarettes_everyday": 3,
+  };
 
   final List<Map<String, dynamic>> items = [
     {
       "id": "first_smoke_time",
       "label": "您起床後多久才吸第一支煙？",
       "options": [
-        {"label": "5 分鐘"},
-        {"label": "6-30 分鐘內"},
-        {"label": "31-60 分鐘內"},
-        {"label": "60 分鐘後"},
+        {"label": "5 分鐘", "value": 3},
+        {"label": "6-30 分鐘內", "value": 2},
+        {"label": "31-60 分鐘內", "value": 1},
+        {"label": "60 分鐘後", "value": 0},
       ],
     },
     {
       "id": "total_cigarettes_everyday",
       "label": "您每日吸多少支煙？",
       "options": [
-        {"label": "31 支以上"},
-        {"label": "21-30 支"},
-        {"label": "11-20 支"},
-        {"label": "10 支或以下"},
+        {"label": "31 支以上", "value": 3},
+        {"label": "21-30 支", "value": 2},
+        {"label": "11-20 支", "value": 1},
+        {"label": "10 支或以下", "value": 0},
       ],
     },
   ];
@@ -128,16 +131,18 @@ class _SmokingAddictionScreenState extends State<SmokingAddictionScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: options.map((optionItem) {
                                     final optionLabel = optionItem["label"];
+                                    final int optionValue = optionItem["value"];
                                     return SizedBox(
                                       height: 30,
                                       child: Row(
                                         children: [
                                           Radio(
-                                            value: optionLabel,
+                                            value: optionValue,
                                             groupValue: optionValues[optionId],
                                             onChanged: (value) {
                                               setState(() {
-                                                optionValues[optionId] = value;
+                                                optionValues[optionId] =
+                                                    value ?? 0;
                                               });
                                             },
                                           ),
@@ -167,9 +172,15 @@ class _SmokingAddictionScreenState extends State<SmokingAddictionScreen> {
                   padding: EdgeInsets.only(left: 15, right: 15),
                   child: ElevatedButton(
                     onPressed: () {
+                      int sum =
+                          (optionValues["first_smoke_time"] ?? 0) +
+                          (optionValues["total_cigarettes_everyday"] ?? 0);
+
                       Navigator.push(
                         context,
-                        PageSlideBottomToUp(page: ResultScreen()),  
+                        PageSlideBottomToUp(
+                          page: ResultScreen(optionResult: sum),
+                        ),
                       );
                     },
                     style: ElevatedButton.styleFrom(

@@ -27,10 +27,6 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("===========");
-    print(widget.content);
-    print("===========");
-
     return Scaffold(
       bottomNavigationBar: BottomNavbarMenu(),
       body: SingleChildScrollView(
@@ -90,13 +86,16 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                 ),
               ),
               SizedBox(height: 15),
-              SizedBox(
-                height: 500,
-                child: InAppWebView(
-                  initialData: InAppWebViewInitialData(data: widget.content),
-                  onWebViewCreated: (controller) {
-                    webViewController = controller;
-                  },
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                child: SizedBox(
+                  height: 500,
+                  child: InAppWebView(
+                    initialData: InAppWebViewInitialData(data: widget.content),
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
+                  ),
                 ),
               ),
             ],

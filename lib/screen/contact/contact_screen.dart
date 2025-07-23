@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
@@ -11,6 +15,29 @@ class ContactScreen extends StatefulWidget {
 }
 
 class _ContactScreenState extends State<ContactScreen> {
+  InAppWebViewController? webViewController;
+  Map<String, dynamic> section = {};
+
+  @override
+  void initState() {
+    super.initState();
+    loadData(); // async function call
+  }
+
+  Future<void> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('api_sections');
+    if (jsonString != null) {
+      setState(() {
+        var sections = jsonDecode(jsonString);
+        if (sections['contact_us'] != null) {
+          section = sections['contact_us'];
+          print(section["content"]);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,10 +71,17 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               SizedBox(height: 15),
               Padding(
-                padding: EdgeInsets.only(left: 15, right: 15),
-                child: Text(
-                  "(Html Contact) 尼古丁會使人上癮或產生依賴性，形成煙癮，人們通常難以克制自己，而且在短時間內就必須補充尼古丁。以下為煙癮程度測試，看看您的煙癮程度有多嚴重。",
-                  style: TextStyle(fontSize: 16),
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                child: SizedBox(
+                  height: 500,
+                  child: InAppWebView(
+                    initialData: InAppWebViewInitialData(
+                      data: section["content"] ?? 0,
+                    ),
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
+                  ),
                 ),
               ),
               SizedBox(height: 15),
