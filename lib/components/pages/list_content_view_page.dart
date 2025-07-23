@@ -29,17 +29,16 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavbarMenu(),
-      body: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          height: screenHeight(context),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/ui/background/bg_cloud.png"),
-              fit: BoxFit.fill,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            // fills entire screen
+            child: Image.asset(
+              "assets/ui/background/bg_cloud.png",
+              fit: BoxFit.cover,
             ),
           ),
-          child: Column(
+          Column(
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 15, right: 15, top: 45),
@@ -86,16 +85,19 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                 ),
               ),
               SizedBox(height: 15),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                child: SizedBox(
-                  height: 500,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                   child: InAppWebView(
                     initialData: InAppWebViewInitialData(data: widget.content),
                     initialSettings: InAppWebViewSettings(
-                      defaultFontSize: 25,
-                      defaultFixedFontSize: 25,
-                      minimumFontSize: 30,
+                      defaultFontSize: 20,
+                      defaultFixedFontSize: 20,
+                      minimumFontSize: 45,
+                      javaScriptEnabled: true,
+                      supportZoom: true,
+                      verticalScrollBarEnabled: false,
+                      transparentBackground: true,
                     ),
                     onWebViewCreated: (controller) {
                       webViewController = controller;
@@ -105,7 +107,7 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

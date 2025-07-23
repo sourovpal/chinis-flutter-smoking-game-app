@@ -73,10 +73,19 @@ class _ContactScreenState extends State<ContactScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                 child: SizedBox(
-                  height: 500,
+                  height: 170,
                   child: InAppWebView(
                     initialData: InAppWebViewInitialData(
                       data: section["content"] ?? 0,
+                    ),
+                    initialSettings: InAppWebViewSettings(
+                      defaultFontSize: 20,
+                      defaultFixedFontSize: 20,
+                      minimumFontSize: 45,
+                      javaScriptEnabled: true,
+                      supportZoom: true,
+                      verticalScrollBarEnabled: false,
+                      transparentBackground: true,
                     ),
                     onWebViewCreated: (controller) {
                       webViewController = controller;
