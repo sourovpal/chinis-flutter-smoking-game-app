@@ -92,6 +92,11 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                   height: 500,
                   child: InAppWebView(
                     initialData: InAppWebViewInitialData(data: widget.content),
+                    initialSettings: InAppWebViewSettings(
+                      defaultFontSize: 25,
+                      defaultFixedFontSize: 25,
+                      minimumFontSize: 30,
+                    ),
                     onWebViewCreated: (controller) {
                       webViewController = controller;
                     },
