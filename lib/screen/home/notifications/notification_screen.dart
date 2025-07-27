@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
+import 'package:http/http.dart' as http;
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -11,22 +14,63 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
+  bool _isLoading = true;
+  String _errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchNotifications();
+  }
+
+  List<Map<String, dynamic>> _notifications = [];
+
+  Future<void> _fetchNotifications() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://lst.waysapp.com/api/mobile/notifications'),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          _notifications = data.cast<Map<String, dynamic>>();
+        });
+      } else {
+        setState(() {
+          _errorMessage =
+              'Failed to load notifications: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Error: ${e.toString()}';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavbarMenu(),
-      body: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          height: screenHeight(context),
-          constraints: BoxConstraints(minHeight: screenHeight(context)),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/ui/background/bg_cloud.png"),
-              fit: BoxFit.fill,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              "assets/ui/background/bg_cloud.png",
+              fit: BoxFit.cover,
             ),
           ),
-          child: Column(
+          Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -47,26 +91,90 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 ),
               ),
               SizedBox(height: 15),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    children: [
-                      ListTile(title: Text("HTML Notification 1")),
-                      Divider(color: Colors.grey[300]),
-                      ListTile(title: Text("HTML Notification 2")),
-                      Divider(color: Colors.grey[300]),
-                      ListTile(title: Text("HTML Notification 3")),
-                      Divider(color: Colors.grey[300]),
-                      ListTile(title: Text("HTML Notification 4")),
-                      Divider(color: Colors.grey[300]),
-                    ],
+              if (_isLoading)
+                Expanded(child: Center(child: CircularProgressIndicator()))
+              else if (_errorMessage.isNotEmpty)
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      _errorMessage,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                )
+              else if (_notifications.isEmpty)
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      "No notifications available",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                )
+              else
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: _notifications.length,
+                    itemBuilder: (context, index) {
+                      final notification = _notifications[index];
+                      return Card(
+                        margin: EdgeInsets.only(bottom: 12),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              Icon(Icons.notifications, color: Colors.amber),
+                              SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      notification["title"] ?? "No title",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    if (notification["body"] != null)
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 4),
+                                        child: Text(
+                                          notification["body"],
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ),
+                                    if (notification["date"] != null)
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          notification["date"],
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-              ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

@@ -70,7 +70,7 @@ class _ContactScreenState extends State<ContactScreen> {
     };
 
     final response = await http.post(
-      Uri.parse('https://lst.waysapp.com/api/contact'),
+      Uri.parse('https://lst.waysapp.com/api/mobile/contact'),
       body: payload,
     );
     setState(() {

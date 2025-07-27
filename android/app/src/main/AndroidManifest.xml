@@ -7,8 +7,9 @@
     <application
         android:label="愛. 無煙"
         android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -31,7 +32,7 @@
                 android:value="default_channel_id" />
             <meta-data
                 android:name="com.google.firebase.messaging.default_notification_icon"
-                android:resource="@drawable/artichoke" />
+                android:resource="@mipmap/launcher_icon" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

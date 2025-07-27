@@ -5,11 +5,14 @@ import 'package:game_app/services/notifi_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:http/http.dart' as http;
 
 Future<void> fetchData() async {
   final prefs = await SharedPreferences.getInstance();
-  final response = await http.get(Uri.parse('https://lst.waysapp.com/api/app'));
+  final response = await http.get(
+    Uri.parse('https://lst.waysapp.com/api/mobile/app'),
+  );
   if (response.statusCode == 200) {
     prefs.setString("api_sections", response.body);
   } else {
@@ -20,6 +23,8 @@ Future<void> fetchData() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   NotificationService().initNotification();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.instance.subscribeToTopic('all_users');
@@ -33,6 +38,8 @@ void main() async {
   await fetchData();
 
   runApp(const MyApp());
+
+  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {
