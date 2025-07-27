@@ -59,7 +59,7 @@ class _SmokingAddictionScreenState extends State<SmokingAddictionScreen> {
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 15, right: 15, top: 45),
-                child: ScreenHeader(title: "煙害解密"),
+                child: ScreenHeader(title: "吸煙嚴重度指數"),
               ),
               Container(
                 width: double.infinity,

@@ -28,11 +28,9 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavbarMenu(),
       body: Stack(
         children: [
           Positioned.fill(
-            // fills entire screen
             child: Image.asset(
               "assets/ui/background/bg_cloud.png",
               fit: BoxFit.cover,
@@ -84,10 +82,14 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 15),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  padding: const EdgeInsets.only(
+                    left: 15,
+                    right: 15,
+                    top: 15,
+                    bottom: 5,
+                  ),
                   child: InAppWebView(
                     initialData: InAppWebViewInitialData(data: widget.content),
                     initialSettings: InAppWebViewSettings(
@@ -109,6 +111,7 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavbarMenu(),
     );
   }
 }

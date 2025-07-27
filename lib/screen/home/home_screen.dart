@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/screen/home/game/game_screen.dart';
@@ -15,6 +16,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
+  bool isNewNotification = false;
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      setState(() {
+        isNewNotification = true;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     setBottomNavbar(index: 2);
@@ -39,13 +52,33 @@ class _HomeScreen extends State<HomeScreen> {
                   title: "愛. 無煙",
                   rightWidget: GestureDetector(
                     onTap: () {
+                      setState(() {
+                        isNewNotification = false;
+                      });
                       setBottomNavbar();
                       Navigator.push(
                         context,
                         PageSlideBottomToUp(page: NotificationScreen()),
                       );
                     },
-                    child: Icon(Icons.notifications, size: 28),
+                    child: Stack(
+                      children: [
+                        if (isNewNotification)
+                          Positioned(
+                            right: 2,
+                            top: 0,
+                            child: Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
+                          ),
+                        Icon(Icons.notifications, size: 28),
+                      ],
+                    ),
                   ),
                 ),
                 Container(

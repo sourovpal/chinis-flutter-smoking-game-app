@@ -6,6 +6,7 @@ import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
@@ -17,6 +18,12 @@ class ContactScreen extends StatefulWidget {
 class _ContactScreenState extends State<ContactScreen> {
   InAppWebViewController? webViewController;
   Map<String, dynamic> section = {};
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -35,6 +42,48 @@ class _ContactScreenState extends State<ContactScreen> {
           print(section["content"]);
         }
       });
+    }
+  }
+
+  void sendContactMail() async {
+    if (isLoading) return;
+
+    if (_nameController.text == "") {
+      return showErrorToast("姓名欄位為必填。");
+    } else if (_phoneController.text == "") {
+      return showErrorToast("電話欄位為必填。");
+    } else if (_emailController.text == "") {
+      return showErrorToast("電子郵件欄位為必填。");
+    } else if (_messageController.text == "") {
+      return showErrorToast("訊息欄位為必填。");
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    Map<String, String> payload = {
+      "name": _nameController.text,
+      "phone": _phoneController.text,
+      "email": _emailController.text,
+      "message": _messageController.text,
+    };
+
+    final response = await http.post(
+      Uri.parse('https://lst.waysapp.com/api/contact'),
+      body: payload,
+    );
+    setState(() {
+      isLoading = false;
+    });
+    if (response.statusCode == 200) {
+      _nameController.clear();
+      _phoneController.clear();
+      _emailController.clear();
+      _messageController.clear();
+      showSuccessToast("訊息已成功發送。");
+    } else {
+      showErrorToast("訊息發送失敗！");
     }
   }
 
@@ -70,10 +119,11 @@ class _ContactScreenState extends State<ContactScreen> {
                 ),
               ),
               SizedBox(height: 15),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                child: SizedBox(
-                  height: 170,
+              SizedBox(
+                height: 200,
+                width: double.infinity,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                   child: InAppWebView(
                     initialData: InAppWebViewInitialData(
                       data: section["content"] ?? 0,
@@ -104,6 +154,7 @@ class _ContactScreenState extends State<ContactScreen> {
                         Text("姓名", style: TextStyle(fontSize: 18)),
                         SizedBox(height: 10),
                         TextField(
+                          controller: _nameController,
                           decoration: InputDecoration(
                             hint: Text(""),
                             border: OutlineInputBorder(),
@@ -129,6 +180,7 @@ class _ContactScreenState extends State<ContactScreen> {
                         Text("電話", style: TextStyle(fontSize: 18)),
                         SizedBox(height: 10),
                         TextField(
+                          controller: _phoneController,
                           decoration: InputDecoration(
                             hint: Text(""),
                             border: OutlineInputBorder(),
@@ -154,6 +206,7 @@ class _ContactScreenState extends State<ContactScreen> {
                         Text("電郵", style: TextStyle(fontSize: 18)),
                         SizedBox(height: 10),
                         TextField(
+                          controller: _emailController,
                           decoration: InputDecoration(
                             hint: Text(""),
                             border: OutlineInputBorder(),
@@ -179,6 +232,7 @@ class _ContactScreenState extends State<ContactScreen> {
                         Text("內容", style: TextStyle(fontSize: 18)),
                         SizedBox(height: 10),
                         TextField(
+                          controller: _messageController,
                           decoration: InputDecoration(
                             hint: Text(""),
                             border: OutlineInputBorder(),
@@ -211,7 +265,7 @@ class _ContactScreenState extends State<ContactScreen> {
                 child: Padding(
                   padding: EdgeInsets.only(left: 15, right: 15),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: sendContactMail,
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       backgroundColor: Colors.black,
@@ -219,10 +273,14 @@ class _ContactScreenState extends State<ContactScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Text("提交", style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      isLoading ? "傳送中..." : "提交",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ),
+              SizedBox(height: 15),
             ],
           ),
         ),

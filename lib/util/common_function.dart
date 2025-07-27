@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class PageSlideBottomToUp extends PageRouteBuilder {
   final Widget page;
@@ -81,4 +85,52 @@ class ScreenHeader extends StatelessWidget {
       ),
     );
   }
+}
+
+void initAchivement() async {
+  final prefs = await SharedPreferences.getInstance();
+  if (prefs.getString("achievements") == null) {
+    Map<String, dynamic> achievements = {
+      "achievement_1": 0,
+      "achievement_2": 0,
+      "achievement_3": 0,
+      "achievement_4": 0,
+      "achievement_5": 0,
+      "achievement_6": 0,
+      "achievement_7": 0,
+      "achievement_8": 0,
+      "achievement_9": 0,
+      "achievement_10": 0,
+      "achievement_11": 0,
+      "achievement_12": 0,
+      "achievement_13": 0,
+      "achievement_14": 0,
+      "achievement_15": 0,
+      "achievement_16": 0,
+      "achievement_17": 0,
+    };
+    prefs.setString("achievements", jsonEncode(achievements));
+  }
+}
+
+void showSuccessToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.green,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
+}
+
+void showErrorToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.red,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
 }

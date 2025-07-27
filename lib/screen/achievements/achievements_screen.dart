@@ -42,7 +42,7 @@ class AchievementsScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 15, right: 15, top: 45),
-                child: ScreenHeader(title: "煙害解密"),
+                child: ScreenHeader(title: "我的成就"),
               ),
               Container(
                 width: double.infinity,
