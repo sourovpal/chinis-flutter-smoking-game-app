@@ -31,6 +31,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
       {"label": "07 味覺、嗅覺提升", "id": 7},
       {"label": "08 無煙七日", "id": 8},
       {"label": "09 退癮徵狀消退", "id": 9},
+      {"label": "10 肺功能提升", "id": 10},
       {"label": "11 不知不覺半年了", "id": 11},
       {"label": "12 成功在望", "id": 12},
       {"label": "13 清新大贏家", "id": 13},

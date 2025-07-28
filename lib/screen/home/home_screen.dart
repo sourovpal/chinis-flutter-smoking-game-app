@@ -73,6 +73,73 @@ class _HomeScreen extends State<HomeScreen> {
                 ((pricePerPack / dailyCigaretters) * totalDaysCigaretters)
                     .toInt();
           }
+
+          if (totalPriceCigaretters <= 1000) {
+            setAchievement(4, {
+              "progress": (totalPriceCigaretters / 10).clamp(0, 100),
+            });
+          }
+          if (totalPriceCigaretters <= 3000) {
+            setAchievement(5, {
+              "progress": (totalPriceCigaretters / 30).clamp(0, 100),
+            });
+            setAchievement(6, {
+              "progress": (totalPriceCigaretters / 50).clamp(0, 100),
+            });
+          }
+
+          if (totalPriceCigaretters == 0) {
+            setAchievement(4, {"progress": 100});
+            setAchievement(5, {"progress": 100});
+            setAchievement(6, {"progress": 100});
+          }
+
+          if (quitDays <= 3 && quitDays > 0) {
+            setAchievement(7, {"progress": 100 / quitDays});
+          }
+
+          if (quitDays <= 7 && quitDays > 0) {
+            setAchievement(8, {"progress": 100 / 7});
+          }
+
+          if (quitDays <= 30 && quitDays > 0) {
+            setAchievement(9, {"progress": 100 / quitDays});
+          }
+
+          if (quitDays <= 90 && quitDays > 0) {
+            setAchievement(10, {"progress": 100 / quitDays});
+          }
+
+          if (quitDays <= 180 && quitDays > 0) {
+            setAchievement(11, {"progress": (quitDays / 2).clamp(0, 100)});
+          }
+
+          if (quitDays <= 360 && quitDays > 0) {
+            setAchievement(12, {"progress": (quitDays / 3).clamp(0, 100)});
+          }
+
+          if (quitDays <= 365 && quitDays > 0) {
+            setAchievement(13, {"progress": (quitDays / 3).clamp(0, 100)});
+          }
+
+          if (quitDays <= 100 && quitDays > 0) {
+            setAchievement(14, {"progress": (quitDays / 3).clamp(0, 100)});
+          }
+
+          if (quitDays <= 200 && quitDays > 0) {
+            setAchievement(15, {"progress": (quitDays / 3).clamp(0, 100)});
+          }
+          if (quitDays == 0) {
+            setAchievement(7, {"progress": 100});
+            setAchievement(8, {"progress": 100});
+            setAchievement(9, {"progress": 100});
+            setAchievement(10, {"progress": 100});
+            setAchievement(11, {"progress": 100});
+            setAchievement(12, {"progress": 100});
+            setAchievement(13, {"progress": 100});
+            setAchievement(14, {"progress": 100});
+            setAchievement(15, {"progress": 100});
+          }
         }
       } catch (e) {
         print("Error");

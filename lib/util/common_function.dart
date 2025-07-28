@@ -121,7 +121,6 @@ Future<Map<String, dynamic>> getAchievement(int key) async {
     final field = "achievement_$key";
     final prefs = await SharedPreferences.getInstance();
     final payload = prefs.getString("achievements");
-
     if (payload != null) {
       final attrs = jsonDecode(payload) as Map<String, dynamic>;
       return Map<String, dynamic>.from(attrs[field] ?? _defaultAchievement);
