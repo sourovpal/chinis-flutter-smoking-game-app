@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:game_app/firebase_options.dart';
 import 'package:game_app/router/routes.dart';
 import 'package:game_app/services/notifi_services.dart';
+import 'package:game_app/util/common_function.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -36,7 +37,7 @@ void main() async {
   });
 
   await fetchData();
-
+  initAchivement();
   runApp(const MyApp());
 
   FlutterNativeSplash.remove();

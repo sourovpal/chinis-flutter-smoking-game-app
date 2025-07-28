@@ -2,9 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
+import 'package:intl/intl.dart';
 
-class SmokingDiaryScreen extends StatelessWidget {
+class SmokingDiaryScreen extends StatefulWidget {
   const SmokingDiaryScreen({super.key});
+  @override
+  State<SmokingDiaryScreen> createState() => _SmokingDiaryScreenState();
+}
+
+class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
+  final TextEditingController _dailyCigarettersController =
+      TextEditingController();
+  final TextEditingController _pricePerPackController = TextEditingController();
+  final TextEditingController _quitDateController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _dailyCigarettersController.dispose();
+    _pricePerPackController.dispose();
+    _quitDateController.dispose();
+    super.dispose();
+  }
+
+  void setFormAttributes() {
+    setAchievement(1, {
+      "last_update": null,
+      "progress": 100,
+      "daily_cigaretters": _dailyCigarettersController.text,
+      "price_per_pack": _pricePerPackController.text,
+      "quit_date": _quitDateController.text,
+    });
+    showSuccessToast("已保存");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +87,7 @@ class SmokingDiaryScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         TextField(
+                          controller: _dailyCigarettersController,
                           decoration: InputDecoration(
                             hint: Text(""),
                             border: OutlineInputBorder(),
@@ -84,6 +119,7 @@ class SmokingDiaryScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         TextField(
+                          controller: _pricePerPackController,
                           decoration: InputDecoration(
                             hint: Text(""),
                             border: OutlineInputBorder(),
@@ -115,6 +151,7 @@ class SmokingDiaryScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         TextField(
+                          controller: _quitDateController,
                           decoration: InputDecoration(
                             hint: Text(""),
                             border: OutlineInputBorder(),
@@ -130,6 +167,21 @@ class SmokingDiaryScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+                          readOnly: true, // Prevent manual typing
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                            );
+                            if (pickedDate != null) {
+                              String formattedDate = DateFormat(
+                                'yyyy-MM-dd',
+                              ).format(pickedDate);
+                              _quitDateController!.text = formattedDate;
+                            }
+                          },
                         ),
                       ],
                     ),
@@ -138,7 +190,7 @@ class SmokingDiaryScreen extends StatelessWidget {
                       height: 55,
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: setFormAttributes,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           shape: RoundedRectangleBorder(

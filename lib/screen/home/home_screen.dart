@@ -7,6 +7,7 @@ import 'package:game_app/screen/home/notifications/notification_screen.dart';
 import 'package:game_app/screen/home/quit_smoking/quit_smoking_screen.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,6 +18,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreen extends State<HomeScreen> {
   bool isNewNotification = false;
+  late int smokingDiaryProgress = 0;
+  late int dailyCigaretters = 0;
+  late int pricePerPack = 0;
+  late int quitDays = 0;
+  late int quitHours = 0;
+  late int quitMinutes = 0;
+  late int totalDaysCigaretters = 0;
+  late int totalPriceCigaretters = 0;
+
+  late Map<String, dynamic> smokingDiaryAttrs = {
+    "daily_cigaretters": 0,
+    "price_per_pack": 0,
+    "quit_date": 0,
+  };
 
   @override
   void initState() {
@@ -25,6 +40,43 @@ class _HomeScreen extends State<HomeScreen> {
       setState(() {
         isNewNotification = true;
       });
+    });
+    initAttribute();
+  }
+
+  Future<void> initAttribute() async {
+    int progress = await getAchievementProgress(1);
+    Map<String, dynamic> attrs = await getAchievement(1);
+    setState(() {
+      try {
+        smokingDiaryProgress = progress;
+        if (attrs.containsKey("quit_date")) {
+          dailyCigaretters = int.tryParse(attrs["daily_cigaretters"]) ?? 0;
+          pricePerPack = int.tryParse(attrs["price_per_pack"]) ?? 0;
+
+          if (attrs["quit_date"] != null) {
+            try {
+              DateTime targetDate = DateTime.parse(attrs["quit_date"]);
+              DateTime currentDate = DateTime.now();
+              Duration difference = targetDate.difference(currentDate);
+              quitDays = difference.inDays;
+              quitHours = difference.inHours.remainder(24);
+              quitMinutes = difference.inMinutes.remainder(60);
+            } catch (error) {
+              print("Error");
+            }
+          }
+          totalDaysCigaretters = dailyCigaretters * quitDays;
+          //
+          if (pricePerPack > 0) {
+            totalPriceCigaretters =
+                ((pricePerPack / dailyCigaretters) * totalDaysCigaretters)
+                    .toInt();
+          }
+        }
+      } catch (e) {
+        print("Error");
+      }
     });
   }
 
@@ -107,15 +159,39 @@ class _HomeScreen extends State<HomeScreen> {
                         padding: EdgeInsets.all(10),
                         child: Container(
                           width: double.infinity,
-                          height: 100,
+                          padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            // color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withOpacity(0.7),
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            image: DecorationImage(
-                              image: AssetImage(
-                                "assets/ui/background/main_diary_text.png",
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "已停止吸煙$quitDays日$quitHours小時$quitMinutes分鐘",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
+                              Text(
+                                "少抽了的煙量$totalDaysCigaretters",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                "已節省之金錢 HK\$$totalPriceCigaretters",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -133,7 +209,7 @@ class _HomeScreen extends State<HomeScreen> {
                             ),
                           ),
                           child: Text(
-                            "開始",
+                            smokingDiaryProgress == 100 ? "唔小心食返" : "開始",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 22,
@@ -221,7 +297,27 @@ class _HomeScreen extends State<HomeScreen> {
                 ),
                 SizedBox(height: 15),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    // Every Open game
+                    int progress = await getAchievementProgress(2);
+                    setAchievement(2, {"progress": progress + 1});
+
+                    // Pre day 1%
+                    String currentDate = DateFormat(
+                      'yyyy-MM-dd',
+                    ).format(DateTime.now());
+
+                    Map<String, dynamic> attrs = await getAchievement(3);
+
+                    if (attrs["last_update"] == "" ||
+                        currentDate != attrs["last_update"]) {
+                      int progress3 = await getAchievementProgress(3);
+                      setAchievement(3, {
+                        "last_update": currentDate,
+                        "progress": progress3 + 1,
+                      });
+                    }
+
                     setBottomNavbar();
                     Navigator.push(
                       context,

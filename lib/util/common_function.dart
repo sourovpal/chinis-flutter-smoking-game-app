@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -91,26 +92,71 @@ void initAchivement() async {
   final prefs = await SharedPreferences.getInstance();
   if (prefs.getString("achievements") == null) {
     Map<String, dynamic> achievements = {
-      "achievement_1": 0,
-      "achievement_2": 0,
-      "achievement_3": 0,
-      "achievement_4": 0,
-      "achievement_5": 0,
-      "achievement_6": 0,
-      "achievement_7": 0,
-      "achievement_8": 0,
-      "achievement_9": 0,
-      "achievement_10": 0,
-      "achievement_11": 0,
-      "achievement_12": 0,
-      "achievement_13": 0,
-      "achievement_14": 0,
-      "achievement_15": 0,
-      "achievement_16": 0,
-      "achievement_17": 0,
+      "achievement_1": {"last_update": "", "progress": 0},
+      "achievement_2": {"last_update": "", "progress": 0},
+      "achievement_3": {"last_update": "", "progress": 0},
+      "achievement_4": {"last_update": "", "progress": 0},
+      "achievement_5": {"last_update": "", "progress": 0},
+      "achievement_6": {"last_update": "", "progress": 0},
+      "achievement_7": {"last_update": "", "progress": 0},
+      "achievement_8": {"last_update": "", "progress": 0},
+      "achievement_9": {"last_update": "", "progress": 0},
+      "achievement_10": {"last_update": "", "progress": 0},
+      "achievement_11": {"last_update": "", "progress": 0},
+      "achievement_12": {"last_update": "", "progress": 0},
+      "achievement_13": {"last_update": "", "progress": 0},
+      "achievement_14": {"last_update": "", "progress": 0},
+      "achievement_15": {"last_update": "", "progress": 0},
+      "achievement_16": {"last_update": "", "progress": 0},
+      "achievement_17": {"last_update": "", "progress": 0},
     };
     prefs.setString("achievements", jsonEncode(achievements));
   }
+}
+
+const _defaultAchievement = {"last_update": null, "value": 0};
+
+Future<Map<String, dynamic>> getAchievement(int key) async {
+  try {
+    final field = "achievement_$key";
+    final prefs = await SharedPreferences.getInstance();
+    final payload = prefs.getString("achievements");
+
+    if (payload != null) {
+      final attrs = jsonDecode(payload) as Map<String, dynamic>;
+      return Map<String, dynamic>.from(attrs[field] ?? _defaultAchievement);
+    }
+    return Map<String, dynamic>.from(_defaultAchievement);
+  } catch (e) {
+    debugPrint('Error getting achievement: $e');
+    return Map<String, dynamic>.from(_defaultAchievement);
+  }
+}
+
+/// Updates or sets an achievement
+Future<bool> setAchievement(int key, Map<String, dynamic> option) async {
+  try {
+    final field = "achievement_$key";
+    final prefs = await SharedPreferences.getInstance();
+    final payload = prefs.getString("achievements");
+
+    final attrs = payload != null
+        ? Map<String, dynamic>.from(jsonDecode(payload))
+        : {};
+
+    // Merge existing data with new options
+    final existing = attrs[field] as Map<String, dynamic>? ?? {};
+    attrs[field] = {...existing, ...option};
+    return await prefs.setString("achievements", jsonEncode(attrs));
+  } catch (e) {
+    debugPrint('Error setting achievement: $e');
+    return false;
+  }
+}
+
+Future<int> getAchievementProgress(int key) async {
+  final attr = await getAchievement(key);
+  return attr["progress"] ?? 0;
 }
 
 void showSuccessToast(String message) {
