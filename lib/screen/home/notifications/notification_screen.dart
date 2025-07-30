@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:game_app/components/Background/full_screen_background.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
-import 'package:game_app/util/common_veriable.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationScreen extends StatefulWidget {
@@ -16,14 +16,13 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   bool _isLoading = true;
   String _errorMessage = '';
+  List<Map<String, dynamic>> _notifications = [];
 
   @override
   void initState() {
     super.initState();
     _fetchNotifications();
   }
-
-  List<Map<String, dynamic>> _notifications = [];
 
   Future<void> _fetchNotifications() async {
     setState(() {
@@ -61,59 +60,38 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       bottomNavigationBar: BottomNavbarMenu(),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              "assets/ui/background/bg_cloud.png",
-              fit: BoxFit.cover,
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 15, right: 15, top: 45),
-                child: ScreenHeader(title: "通知"),
-              ),
-              Container(
-                width: double.infinity,
-                height: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      "assets/ui/background/bar_notification.png",
-                    ),
-                    fit: BoxFit.fill,
+      body: FullScreenBackground(
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _errorMessage.isNotEmpty
+            ? Center(child: Text(_errorMessage))
+            : _notifications.isEmpty
+            ? Center(child: Text('No notifications found'))
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 15, right: 15, top: 0),
+                    child: ScreenHeader(title: "通知"),
                   ),
-                ),
-              ),
-              SizedBox(height: 15),
-              if (_isLoading)
-                Expanded(child: Center(child: CircularProgressIndicator()))
-              else if (_errorMessage.isNotEmpty)
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      _errorMessage,
-                      style: TextStyle(color: Colors.red),
+                  Container(
+                    width: double.infinity,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                          "assets/ui/background/bar_notification.png",
+                        ),
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
-                )
-              else if (_notifications.isEmpty)
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      "No notifications available",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                )
-              else
-                Expanded(
-                  child: ListView.builder(
+                  SizedBox(height: 15),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     itemCount: _notifications.length,
                     itemBuilder: (context, index) {
@@ -171,10 +149,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       );
                     },
                   ),
-                ),
-            ],
-          ),
-        ],
+                ],
+              ),
       ),
     );
   }
