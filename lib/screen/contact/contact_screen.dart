@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:game_app/components/Background/full_screen_background.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
@@ -90,199 +91,190 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       bottomNavigationBar: BottomNavbarMenu(),
-      body: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          constraints: BoxConstraints(minHeight: screenHeight(context)),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/ui/background/bg_cloud.png"),
-              fit: BoxFit.fill,
+      body: FullScreenBackground(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 15, right: 15, top: 0),
+              child: ScreenHeader(title: "聯絡我們"),
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 15, right: 15, top: 45),
-                child: ScreenHeader(title: "聯絡我們"),
+            Container(
+              width: double.infinity,
+              height: 100,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/ui/background/bar_contact.png"),
+                  fit: BoxFit.fill,
+                ),
               ),
-              Container(
-                width: double.infinity,
-                height: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/ui/background/bar_contact.png"),
-                    fit: BoxFit.fill,
+            ),
+            SizedBox(height: 15),
+            SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                child: InAppWebView(
+                  initialData: InAppWebViewInitialData(
+                    data: section["content"] ?? 0,
                   ),
-                ),
-              ),
-              SizedBox(height: 15),
-              SizedBox(
-                height: 200,
-                width: double.infinity,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                  child: InAppWebView(
-                    initialData: InAppWebViewInitialData(
-                      data: section["content"] ?? 0,
-                    ),
-                    initialSettings: InAppWebViewSettings(
-                      defaultFontSize: 20,
-                      defaultFixedFontSize: 20,
-                      minimumFontSize: 45,
-                      javaScriptEnabled: true,
-                      supportZoom: true,
-                      verticalScrollBarEnabled: false,
-                      transparentBackground: true,
-                    ),
-                    onWebViewCreated: (controller) {
-                      webViewController = controller;
-                    },
+                  initialSettings: InAppWebViewSettings(
+                    defaultFontSize: 20,
+                    defaultFixedFontSize: 20,
+                    minimumFontSize: 45,
+                    javaScriptEnabled: true,
+                    supportZoom: true,
+                    verticalScrollBarEnabled: false,
+                    transparentBackground: true,
                   ),
+                  onWebViewCreated: (controller) {
+                    webViewController = controller;
+                  },
                 ),
               ),
-              SizedBox(height: 15),
-              Padding(
-                padding: EdgeInsets.only(left: 15, right: 15),
-                child: Column(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("姓名", style: TextStyle(fontSize: 18)),
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: _nameController,
-                          decoration: InputDecoration(
-                            hint: Text(""),
-                            border: OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey[400]!),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+            ),
+            SizedBox(height: 15),
+            Padding(
+              padding: EdgeInsets.only(left: 15, right: 15),
+              child: Column(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("姓名", style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          hint: Text(""),
+                          border: OutlineInputBorder(),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[400]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("電話", style: TextStyle(fontSize: 18)),
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: _phoneController,
-                          decoration: InputDecoration(
-                            hint: Text(""),
-                            border: OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey[400]!),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: primaryColor,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("電郵", style: TextStyle(fontSize: 18)),
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            hint: Text(""),
-                            border: OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey[400]!),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: primaryColor,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("內容", style: TextStyle(fontSize: 18)),
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: _messageController,
-                          decoration: InputDecoration(
-                            hint: Text(""),
-                            border: OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey[400]!),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: primaryColor,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 3,
-                          minLines: 3,
-                        ),
-                        SizedBox(height: 20),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(),
-                child: Padding(
-                  padding: EdgeInsets.only(left: 15, right: 15),
-                  child: ElevatedButton(
-                    onPressed: sendContactMail,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
                       ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("電話", style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: _phoneController,
+                        decoration: InputDecoration(
+                          hint: Text(""),
+                          border: OutlineInputBorder(),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[400]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("電郵", style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          hint: Text(""),
+                          border: OutlineInputBorder(),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[400]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("內容", style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: _messageController,
+                        decoration: InputDecoration(
+                          hint: Text(""),
+                          border: OutlineInputBorder(),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[400]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        minLines: 3,
+                      ),
+                      SizedBox(height: 20),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(),
+              child: Padding(
+                padding: EdgeInsets.only(left: 15, right: 15),
+                child: ElevatedButton(
+                  onPressed: sendContactMail,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
-                      isLoading ? "傳送中..." : "提交",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                  ),
+                  child: Text(
+                    isLoading ? "傳送中..." : "提交",
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
-              SizedBox(height: 15),
-            ],
-          ),
+            ),
+            SizedBox(height: 15),
+          ],
         ),
       ),
     );

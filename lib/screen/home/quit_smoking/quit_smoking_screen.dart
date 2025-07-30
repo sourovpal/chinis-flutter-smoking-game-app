@@ -87,7 +87,6 @@ class _QuitSmokingScreenState extends State<QuitSmokingScreen> {
                     // final index = entrie.key;
                     final item = entrie.value;
                     // final isLast = index == items.length - 1;
-
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(

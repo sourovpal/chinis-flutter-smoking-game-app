@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:game_app/components/Background/full_screen_background.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/screen/home/game/game_screen.dart';
 import 'package:game_app/screen/home/harm_smoking/harm_smoking_screen.dart';
@@ -81,62 +82,249 @@ class _HomeScreen extends State<HomeScreen> {
     setBottomNavbar(index: 2);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       bottomNavigationBar: BottomNavbarMenu(),
-      body: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          height: screenHeight(context),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/ui/background/bg_cloud.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(left: 15, right: 15, top: 45),
-            child: Column(
-              children: [
-                ScreenHeader(
-                  title: "愛. 無煙",
-                  rightWidget: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isNewNotification = false;
-                      });
-                      setBottomNavbar();
-                      Navigator.push(
-                        context,
-                        PageSlideBottomToUp(page: NotificationScreen()),
-                      );
-                    },
-                    child: Stack(
-                      children: [
-                        if (isNewNotification)
-                          Positioned(
-                            right: 2,
-                            top: 0,
-                            child: Container(
-                              width: 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(100),
-                              ),
+      body: FullScreenBackground(
+        child: Padding(
+          padding: EdgeInsets.only(left: 15, right: 15, top: 0),
+          child: Column(
+            children: [
+              ScreenHeader(
+                title: "愛. 無煙",
+                rightWidget: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isNewNotification = false;
+                    });
+                    setBottomNavbar();
+                    Navigator.push(
+                      context,
+                      PageSlideBottomToUp(page: NotificationScreen()),
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      if (isNewNotification)
+                        Positioned(
+                          right: 2,
+                          top: 0,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(100),
                             ),
                           ),
-                        Icon(Icons.notifications, size: 28),
-                      ],
-                    ),
+                        ),
+                      Icon(Icons.notifications, size: 28),
+                    ],
                   ),
                 ),
-                Container(
+              ),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  image: DecorationImage(
+                    image: AssetImage("assets/ui/background/main_diary.png"),
+                    fit: BoxFit.fill,
+                    alignment: Alignment(0, 0),
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 5,
+                      spreadRadius: 1,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 45),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.7),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "已停止吸煙$quitDays日$quitHours小時$quitMinutes分鐘",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              "少抽了的煙量$totalDaysCigaretters",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              "已節省之金錢 HK\$$totalPriceCigaretters",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Align(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          resetAchivement();
+                          setBottomNavbar();
+                          Navigator.pushNamed(context, "/smoking-diary");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 25,
+                          ),
+                        ),
+                        child: Text(
+                          smokingDiaryProgress == 100 ? "唔小心食返" : "開始",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              ),
+              SizedBox(height: 15),
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageSlideBottomToUp(page: HarmSmokingScreen()),
+                        );
+                        setBottomNavbar();
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: 165,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          image: DecorationImage(
+                            image: AssetImage(
+                              "assets/ui/background/bar_secret_with_text.png",
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 5,
+                              spreadRadius: 1,
+                              offset: Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setBottomNavbar();
+                        Navigator.push(
+                          context,
+                          PageSlideBottomToUp(page: QuitSmokingScreen()),
+                        );
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: 165,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          image: DecorationImage(
+                            image: AssetImage(
+                              "assets/ui/background/main_method_with_text.png",
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 5,
+                              spreadRadius: 1,
+                              offset: Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 15),
+              GestureDetector(
+                onTap: () async {
+                  // Every Open game
+                  int progress = await getAchievementProgress(2);
+                  setAchievement(2, {"progress": progress + 1});
+
+                  // Pre day 1%
+                  String currentDate = DateFormat(
+                    'yyyy-MM-dd',
+                  ).format(DateTime.now());
+
+                  Map<String, dynamic> attrs = await getAchievement(3);
+
+                  if (attrs["last_update"] == "" ||
+                      currentDate != attrs["last_update"]) {
+                    int progress3 = await getAchievementProgress(3);
+                    setAchievement(3, {
+                      "last_update": currentDate,
+                      "progress": progress3 + 1,
+                    });
+                  }
+
+                  setBottomNavbar();
+                  Navigator.push(
+                    context,
+                    PageSlideBottomToUp(page: GameScreen()),
+                  );
+                },
+                child: Container(
                   width: double.infinity,
+                  height: 155,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     image: DecorationImage(
-                      image: AssetImage("assets/ui/background/main_diary.png"),
-                      fit: BoxFit.fill,
-                      alignment: Alignment(0, 0),
+                      image: AssetImage(
+                        "assets/ui/background/main_game_with_text.png",
+                      ),
+                      fit: BoxFit.cover,
+                      alignment: Alignment(0, 1),
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     boxShadow: [
@@ -148,204 +336,9 @@ class _HomeScreen extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 45),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "已停止吸煙$quitDays日$quitHours小時$quitMinutes分鐘",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                "少抽了的煙量$totalDaysCigaretters",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                "已節省之金錢 HK\$$totalPriceCigaretters",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Align(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setBottomNavbar();
-                            Navigator.pushNamed(context, "/smoking-diary");
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            padding: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 25,
-                            ),
-                          ),
-                          child: Text(
-                            smokingDiaryProgress == 100 ? "唔小心食返" : "開始",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                    ],
-                  ),
                 ),
-                SizedBox(height: 15),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            PageSlideBottomToUp(page: HarmSmokingScreen()),
-                          );
-                          setBottomNavbar();
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            image: DecorationImage(
-                              image: AssetImage(
-                                "assets/ui/background/bar_secret_with_text.png",
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 5,
-                                spreadRadius: 1,
-                                offset: Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 15),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setBottomNavbar();
-                          Navigator.push(
-                            context,
-                            PageSlideBottomToUp(page: QuitSmokingScreen()),
-                          );
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            image: DecorationImage(
-                              image: AssetImage(
-                                "assets/ui/background/main_method_with_text.png",
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 5,
-                                spreadRadius: 1,
-                                offset: Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 15),
-                GestureDetector(
-                  onTap: () async {
-                    // Every Open game
-                    int progress = await getAchievementProgress(2);
-                    setAchievement(2, {"progress": progress + 1});
-
-                    // Pre day 1%
-                    String currentDate = DateFormat(
-                      'yyyy-MM-dd',
-                    ).format(DateTime.now());
-
-                    Map<String, dynamic> attrs = await getAchievement(3);
-
-                    if (attrs["last_update"] == "" ||
-                        currentDate != attrs["last_update"]) {
-                      int progress3 = await getAchievementProgress(3);
-                      setAchievement(3, {
-                        "last_update": currentDate,
-                        "progress": progress3 + 1,
-                      });
-                    }
-
-                    setBottomNavbar();
-                    Navigator.push(
-                      context,
-                      PageSlideBottomToUp(page: GameScreen()),
-                    );
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    height: 155,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      image: DecorationImage(
-                        image: AssetImage(
-                          "assets/ui/background/main_game_with_text.png",
-                        ),
-                        fit: BoxFit.cover,
-                        alignment: Alignment(0, 1),
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 5,
-                          spreadRadius: 1,
-                          offset: Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

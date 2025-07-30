@@ -80,7 +80,7 @@ class ScreenHeader extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
             ),
           ),
           Expanded(
@@ -318,8 +318,12 @@ Future<void> resetAchivement() async {
   await setAchievement(15, {"progress": 0});
   setAchievement(17, {"progress": 0});
   Map<String, dynamic> attrs = await getAchievement(1);
-  if (attrs["last_update"] != null) {
+  if (attrs["last_update"] != null &&
+      attrs["last_update"] != "" &&
+      attrs["progress"] == 0) {
     await setAchievement(16, {"progress": 100});
+  } else {
+    await setAchievement(16, {"progress": 0});
   }
 }
 

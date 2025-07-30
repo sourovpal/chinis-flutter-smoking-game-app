@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game_app/components/Background/full_screen_background.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
@@ -83,99 +84,89 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
 
           final items = snapshot.data!;
 
-          return SingleChildScrollView(
-            child: Container(
-              width: double.infinity,
-              constraints: BoxConstraints(minHeight: screenHeight(context)),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/ui/background/bg_cloud.png"),
-                  fit: BoxFit.fill,
+          return FullScreenBackground(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 15, right: 15, top: 0),
+                  child: ScreenHeader(title: "我的成就"),
                 ),
-              ),
-              child: Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 15, right: 15, top: 45),
-                    child: ScreenHeader(title: "我的成就"),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 100,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                          "assets/ui/background/bar_achievement.png",
-                        ),
-                        fit: BoxFit.fill,
+                Container(
+                  width: double.infinity,
+                  height: 100,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        "assets/ui/background/bar_achievement.png",
                       ),
+                      fit: BoxFit.fill,
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  Text(
-                    "已達成目標 $completedCount／17",
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                ),
+                const SizedBox(height: 15),
+                Text(
+                  "已達成目標 $completedCount／17",
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 15),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: Column(
-                      children: items.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final item = entry.value;
-                        final imageSl = item["id"];
+                ),
+                const SizedBox(height: 15),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: Column(
+                    children: items.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final item = entry.value;
+                      final imageSl = item["id"];
 
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 0,
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Text(
-                                      item["label"],
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 15),
-                                  Expanded(
-                                    flex: 1,
-                                    child: LinearProgressIndicator(
-                                      value: item["progress"] / 100,
-                                      backgroundColor: Colors.grey[400],
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        item["completed"]
-                                            ? Colors.green
-                                            : Colors.blue,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 35),
-                                  Image.asset(
-                                    "assets/ui/icon/icon_$imageSl.png",
-                                    width: 45,
-                                    height: 45,
-                                  ),
-                                ],
-                              ),
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 0,
                             ),
-                          ],
-                        );
-                      }).toList(),
-                    ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    item["label"],
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+                                Expanded(
+                                  flex: 1,
+                                  child: LinearProgressIndicator(
+                                    value: item["progress"] / 100,
+                                    backgroundColor: Colors.grey[400],
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      item["completed"]
+                                          ? Colors.green
+                                          : Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 35),
+                                Image.asset(
+                                  "assets/ui/icon/icon_$imageSl.png",
+                                  width: 45,
+                                  height: 45,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
