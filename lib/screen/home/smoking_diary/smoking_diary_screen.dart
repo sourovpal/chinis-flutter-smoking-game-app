@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
@@ -19,6 +20,7 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
   @override
   void initState() {
     super.initState();
+    resetAchivement();
   }
 
   @override
@@ -30,14 +32,16 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
   }
 
   void setFormAttributes() {
+    String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     setAchievement(1, {
-      "last_update": null,
+      "last_update": currentDate,
       "progress": 100,
       "daily_cigaretters": _dailyCigarettersController.text,
       "price_per_pack": _pricePerPackController.text,
       "quit_date": _quitDateController.text,
     });
     showSuccessToast("已保存");
+    reloadAchivement();
   }
 
   @override
@@ -88,6 +92,9 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
                         SizedBox(height: 10),
                         TextField(
                           controller: _dailyCigarettersController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           decoration: InputDecoration(
                             hint: Text(""),
                             border: OutlineInputBorder(),
@@ -120,6 +127,9 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
                         SizedBox(height: 10),
                         TextField(
                           controller: _pricePerPackController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           decoration: InputDecoration(
                             hint: Text(""),
                             border: OutlineInputBorder(),

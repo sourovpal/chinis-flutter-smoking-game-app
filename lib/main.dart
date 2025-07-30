@@ -26,9 +26,9 @@ void main() async {
   NotificationService().initNotification();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.instance.subscribeToTopic('all_users');
+
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     NotificationService().showNotification(
       title: message.notification?.title,
@@ -38,9 +38,11 @@ void main() async {
 
   await fetchData();
   initAchivement();
-  runApp(const MyApp());
-
+  await Future.delayed(const Duration(seconds: 1));
   FlutterNativeSplash.remove();
+  //
+  runApp(const MyApp());
+  await requestNotificationPermissions();
 }
 
 class MyApp extends StatelessWidget {

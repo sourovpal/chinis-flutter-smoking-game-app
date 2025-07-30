@@ -17,3 +17,15 @@ ID/PW: lst_admin/Lst@1220
 *** App name
 愛. 無煙
 Love. Smokeless
+
+
+Yes, all reset except 16
+
+For 16, the achievement is only trigger when user reset the journeyform on the home page. If journeyform reset, this achievement will be 100%.
+For 17, the achievement is only trigger when achievement #13 is 100% AND journeyform does not reset (Achievement 16 not triggered)
+
+Please use hours to calculate, here's the example:
+If Hours = 0 then 0%
+If Hours = 7.2 then 10%
+If Hours = 24 then 33%
+If Hours = 72 then 100%

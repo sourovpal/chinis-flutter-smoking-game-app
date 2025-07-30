@@ -1,12 +1,16 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
   Future<void> initNotification() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('artichoke');
+        AndroidInitializationSettings('logo_icon');
 
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
@@ -25,6 +29,8 @@ class NotificationService {
       initializationSettings,
       onDidReceiveNotificationResponse:
           (NotificationResponse notificationResponse) async {},
+      onDidReceiveBackgroundNotificationResponse:
+          (NotificationResponse response) {},
     );
   }
 
