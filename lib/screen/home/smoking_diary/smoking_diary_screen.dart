@@ -33,6 +33,30 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
 
   void setFormAttributes(BuildContext context) {
     String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    if (_dailyCigarettersController.text == "" ||
+        _pricePerPackController.text == "" ||
+        _quitDateController.text == "") {
+      return showErrorToast("所有輸入欄位皆為必填。");
+    }
+
+    if (_quitDateController.text.isNotEmpty) {
+      try {
+        DateTime currentDateTime = DateFormat(
+          'yyyy-MM-dd HH:mm',
+        ).parse(_quitDateController.text);
+
+        DateTime updatedDateTime = currentDateTime.add(Duration(minutes: 1));
+
+        _quitDateController.text = DateFormat(
+          'yyyy-MM-dd HH:mm',
+        ).format(updatedDateTime);
+      } catch (e) {
+        print("Error parsing date: $e");
+      }
+    }
+    print(_quitDateController.text);
+
     setAchievement(1, {
       "last_update": currentDate,
       "progress": 100,
@@ -54,7 +78,7 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 15, right: 15, top: 0),
+              padding: EdgeInsets.only(left: 15, right: 15, bottom: 0),
               child: ScreenHeader(title: "戒煙日記"),
             ),
             Container(
@@ -69,7 +93,7 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
             ),
             SizedBox(height: 30),
             Padding(
-              padding: EdgeInsets.only(left: 15, right: 15),
+              padding: EdgeInsets.only(left: 15, right: 15, bottom: 30),
               child: Column(
                 children: [
                   Column(
@@ -170,19 +194,37 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
                             ),
                           ),
                         ),
-                        readOnly: true, // Prevent manual typing
+                        readOnly: true,
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100),
+                            helpText: 'Select a date',
                           );
+
                           if (pickedDate != null) {
-                            String formattedDate = DateFormat(
-                              'yyyy-MM-dd',
-                            ).format(pickedDate);
-                            _quitDateController!.text = formattedDate;
+                            TimeOfDay? pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                              helpText: 'Select a time',
+                            );
+
+                            if (pickedTime != null) {
+                              final DateTime fullDateTime = DateTime(
+                                pickedDate.year,
+                                pickedDate.month,
+                                pickedDate.day,
+                                pickedTime.hour,
+                                pickedTime.minute,
+                              );
+
+                              String formattedDateTime = DateFormat(
+                                'yyyy-MM-dd HH:mm',
+                              ).format(fullDateTime);
+                              _quitDateController.text = formattedDateTime;
+                            }
                           }
                         },
                       ),

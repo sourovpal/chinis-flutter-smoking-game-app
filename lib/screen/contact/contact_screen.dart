@@ -40,7 +40,6 @@ class _ContactScreenState extends State<ContactScreen> {
         var sections = jsonDecode(jsonString);
         if (sections['contact_us'] != null) {
           section = sections['contact_us'];
-          print(section["content"]);
         }
       });
     }
@@ -273,7 +272,7 @@ class _ContactScreenState extends State<ContactScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 50),
           ],
         ),
       ),

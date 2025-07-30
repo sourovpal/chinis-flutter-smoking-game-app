@@ -186,8 +186,17 @@ class _HomeScreen extends State<HomeScreen> {
                     ),
                     Align(
                       child: ElevatedButton(
-                        onPressed: () {
-                          resetAchivement();
+                        onPressed: () async {
+                          if (smokingDiaryProgress == 100) {
+                            final result = await showConfirmationDialog(
+                              context,
+                            );
+                            if (result != true) return;
+                            resetAchivement();
+                            setBottomNavbar();
+                            Navigator.pushNamed(context, "/smoking-diary");
+                            return;
+                          }
                           setBottomNavbar();
                           Navigator.pushNamed(context, "/smoking-diary");
                         },

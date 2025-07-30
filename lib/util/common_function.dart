@@ -362,3 +362,46 @@ Future<void> requestNotificationPermissions() async {
     }
   }
 }
+
+Future<bool?> showConfirmationDialog(BuildContext context) async {
+  final result = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false, // User must tap a button to close
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('確認重設?'),
+        content: const Text('唔小心食番煙？唔好放棄，咪做煙仔阿四！戒煙只係一個過程。記住自己點解失手，再接再勵！'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // Cancel
+            style: TextButton.styleFrom(foregroundColor: Colors.grey[600]),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true), // Reset
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('確定'),
+          ),
+        ],
+      );
+    },
+  );
+
+  return result;
+
+  // if (result == true) {
+  //   // User pressed Reset
+  //   ScaffoldMessenger.of(
+  //     context,
+  //   ).showSnackBar(const SnackBar(content: Text('Settings have been reset')));
+  //   // Add your reset logic here
+  // } else {
+  //   // User pressed Cancel or dismissed dialog
+  //   ScaffoldMessenger.of(
+  //     context,
+  //   ).showSnackBar(const SnackBar(content: Text('Reset canceled')));
+  // }
+}
