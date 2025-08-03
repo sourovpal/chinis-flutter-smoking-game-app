@@ -89,6 +89,7 @@ class _QuitSmokingScreenState extends State<QuitSmokingScreen> {
                     // final isLast = index == items.length - 1;
                     return GestureDetector(
                       onTap: () {
+                        setBottomNavbar();
                         Navigator.push(
                           context,
                           PageSlideRightToLeft(

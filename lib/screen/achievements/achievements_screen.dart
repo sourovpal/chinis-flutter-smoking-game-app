@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:game_app/components/Background/full_screen_background.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
-import 'package:game_app/util/common_veriable.dart';
 
 class AchievementsScreen extends StatefulWidget {
   const AchievementsScreen({super.key});
@@ -18,6 +17,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   @override
   void initState() {
     super.initState();
+    reloadAchivement();
     _achievementsFuture = _loadAchievements();
   }
 

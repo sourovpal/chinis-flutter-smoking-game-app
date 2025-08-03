@@ -31,7 +31,7 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
     super.dispose();
   }
 
-  void setFormAttributes(BuildContext context) {
+  Future<void> setFormAttributes(BuildContext context) async {
     String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     if (_dailyCigarettersController.text == "" ||
@@ -57,17 +57,31 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
         print("Error parsing date: $e");
       }
     }
-    print(_quitDateController.text);
 
-    setAchievement(1, {
+    Map<String, dynamic> attrs = await getAchievement(1);
+
+    String isSetForm = "no";
+
+    if ((attrs["reset"] == "no" && attrs["progress"] == 100) ||
+        attrs["reset"] == "yes") {
+      isSetForm = "yes";
+    }
+
+    await resetAchivement();
+
+    await setAchievement(1, {
       "last_update": currentDate,
       "progress": 100,
       "daily_cigaretters": _dailyCigarettersController.text,
       "price_per_pack": _pricePerPackController.text,
       "quit_date": _quitDateController.text,
+      "reset": isSetForm,
     });
+
+    await reloadAchivement();
+
     showSuccessToast("已保存");
-    reloadAchivement();
+    setBottomNavbar(index: 2);
     Navigator.pushNamed(context, "/");
   }
 

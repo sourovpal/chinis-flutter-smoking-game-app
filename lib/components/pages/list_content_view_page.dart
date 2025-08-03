@@ -64,7 +64,7 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                 rightWidget: widget.isBack == null
                     ? ElevatedButton.icon(
                         onPressed: () {
-                          setBottomNavbar(index: 2);
+                          setBottomNavbar();
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(

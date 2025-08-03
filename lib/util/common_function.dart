@@ -97,7 +97,7 @@ void initAchivement() async {
   final prefs = await SharedPreferences.getInstance();
   if (prefs.getString("achievements") == null) {
     Map<String, dynamic> achievements = {
-      "achievement_1": {"last_update": "", "progress": 0},
+      "achievement_1": {"last_update": "", "progress": 0, "reset": "no"},
       "achievement_2": {"last_update": "", "progress": 0},
       "achievement_3": {"last_update": "", "progress": 0},
       "achievement_4": {"last_update": "", "progress": 0},
@@ -206,11 +206,11 @@ Future<void> reloadAchivement() async {
         try {
           DateTime targetDate = DateTime.parse(attrs["quit_date"]);
           DateTime currentDate = DateTime.now();
-          Duration difference = targetDate.difference(currentDate);
-          totalDaysToHours = difference.inHours;
-          quitDays = difference.inDays;
-          if (difference.inHours.remainder(24) < 24) {
-            // quitDays = quitDays + 1;
+
+          if (currentDate.isAfter(targetDate)) {
+            Duration difference = currentDate.difference(targetDate);
+            totalDaysToHours = difference.inHours;
+            quitDays = difference.inDays;
           }
         } catch (error) {
           print("Error");
@@ -292,6 +292,12 @@ Future<void> reloadAchivement() async {
         setAchievement(14, {"progress": 0});
         setAchievement(15, {"progress": 0});
       }
+
+      if (attrs["reset"] == "yes") {
+        await setAchievement(16, {"progress": 100});
+      } else {
+        await setAchievement(16, {"progress": 0});
+      }
     }
   } catch (e) {
     print("Error");
@@ -320,15 +326,8 @@ Future<void> resetAchivement() async {
   await setAchievement(13, {"progress": 0});
   await setAchievement(14, {"progress": 0});
   await setAchievement(15, {"progress": 0});
-  setAchievement(17, {"progress": 0});
-  Map<String, dynamic> attrs = await getAchievement(1);
-  if (attrs["last_update"] != null &&
-      attrs["last_update"] != "" &&
-      attrs["progress"] == 0) {
-    await setAchievement(16, {"progress": 100});
-  } else {
-    await setAchievement(16, {"progress": 0});
-  }
+  // 16
+  await setAchievement(17, {"progress": 0});
 }
 
 Future<void> requestNotificationPermissions() async {

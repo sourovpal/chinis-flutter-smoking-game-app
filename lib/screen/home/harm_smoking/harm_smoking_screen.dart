@@ -86,6 +86,7 @@ class _HarmSmokingScreenState extends State<HarmSmokingScreen> {
 
                     return GestureDetector(
                       onTap: () {
+                        setBottomNavbar();
                         Navigator.push(
                           context,
                           PageSlideRightToLeft(

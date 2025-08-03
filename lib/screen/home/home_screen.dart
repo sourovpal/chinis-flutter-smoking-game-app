@@ -54,10 +54,13 @@ class _HomeScreen extends State<HomeScreen> {
             try {
               DateTime targetDate = DateTime.parse(attrs["quit_date"]);
               DateTime currentDate = DateTime.now();
-              Duration difference = currentDate.difference(targetDate);
-              quitDays = difference.inDays.abs();
-              quitHours = difference.inHours.remainder(24).abs();
-              quitMinutes = difference.inMinutes.remainder(60).abs();
+
+              if (currentDate.isAfter(targetDate)) {
+                Duration difference = currentDate.difference(targetDate);
+                quitDays = difference.inDays.abs();
+                quitHours = difference.inHours.remainder(24).abs();
+                quitMinutes = difference.inMinutes.remainder(60).abs();
+              }
             } catch (error) {
               print("Error home 1");
             }
@@ -79,8 +82,6 @@ class _HomeScreen extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    setBottomNavbar(index: 2);
-
     return Scaffold(
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: BottomNavbarMenu(),
@@ -193,7 +194,6 @@ class _HomeScreen extends State<HomeScreen> {
                               context,
                             );
                             if (result != true) return;
-                            resetAchivement();
                             setBottomNavbar();
                             Navigator.pushNamed(context, "/smoking-diary");
                             return;
@@ -229,11 +229,11 @@ class _HomeScreen extends State<HomeScreen> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
+                        setBottomNavbar();
                         Navigator.push(
                           context,
                           PageSlideBottomToUp(page: HarmSmokingScreen()),
                         );
-                        setBottomNavbar();
                       },
                       child: Container(
                         width: double.infinity,
@@ -298,6 +298,7 @@ class _HomeScreen extends State<HomeScreen> {
               SizedBox(height: 15),
               GestureDetector(
                 onTap: () async {
+                  setBottomNavbar();
                   // Every Open game
                   int progress = await getAchievementProgress(2);
                   setAchievement(2, {"progress": progress + 1});
@@ -318,7 +319,6 @@ class _HomeScreen extends State<HomeScreen> {
                     });
                   }
 
-                  setBottomNavbar();
                   Navigator.push(
                     context,
                     PageSlideBottomToUp(page: GameScreen()),
