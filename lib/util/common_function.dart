@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -207,30 +208,30 @@ Future<void> reloadAchivement() async {
           DateTime currentDate = DateTime.now();
           Duration difference = targetDate.difference(currentDate);
           totalDaysToHours = difference.inHours;
+          quitDays = difference.inDays;
+          if (difference.inHours.remainder(24) < 24) {
+            // quitDays = quitDays + 1;
+          }
         } catch (error) {
           print("Error");
         }
       }
 
       totalDaysCigaretters = dailyCigaretters * quitDays;
-      //
+
       if (pricePerPack > 0) {
         totalPriceCigaretters =
             ((pricePerPack / dailyCigaretters) * totalDaysCigaretters).toInt();
       }
 
       if (totalPriceCigaretters <= 1000) {
-        setAchievement(4, {
-          "progress": (totalPriceCigaretters / 10).clamp(0, 100),
-        });
+        setAchievement(4, {"progress": (totalPriceCigaretters / 1000) * 100});
       }
       if (totalPriceCigaretters <= 3000) {
-        setAchievement(5, {
-          "progress": (totalPriceCigaretters / 30).clamp(0, 100),
-        });
-        setAchievement(6, {
-          "progress": (totalPriceCigaretters / 50).clamp(0, 100),
-        });
+        setAchievement(5, {"progress": (totalPriceCigaretters / 3000) * 100});
+      }
+      if (totalPriceCigaretters <= 5000) {
+        setAchievement(6, {"progress": (totalPriceCigaretters / 5000) * 100});
       }
 
       if (totalPriceCigaretters == 0) {
@@ -239,44 +240,47 @@ Future<void> reloadAchivement() async {
         setAchievement(6, {"progress": 0});
       }
 
-      if (totalDaysToHours <= 3 && totalDaysToHours > 0) {
-        setAchievement(7, {"progress": (totalDaysToHours / 3) * 100});
+      if (totalDaysToHours <= 72 && totalDaysToHours > 0) {
+        setAchievement(7, {"progress": (totalDaysToHours / 72) * 100});
       }
 
-      if (totalDaysToHours <= 7 && totalDaysToHours > 0) {
-        setAchievement(8, {"progress": (totalDaysToHours / 7) * 100});
+      if (totalDaysToHours <= 168 && totalDaysToHours > 0) {
+        setAchievement(8, {"progress": (totalDaysToHours / 168) * 100});
       }
 
-      if (totalDaysToHours <= 30 && totalDaysToHours > 0) {
-        setAchievement(9, {"progress": (totalDaysToHours / 30) * 100});
+      if (totalDaysToHours <= 720 && totalDaysToHours > 0) {
+        setAchievement(9, {"progress": (totalDaysToHours / 720) * 100});
       }
 
-      if (totalDaysToHours <= 90 && totalDaysToHours > 0) {
-        setAchievement(10, {"progress": (totalDaysToHours / 90) * 100});
+      if (totalDaysToHours <= 2160 && totalDaysToHours > 0) {
+        setAchievement(10, {"progress": (totalDaysToHours / 2160) * 100});
       }
 
-      if (totalDaysToHours <= 180 && totalDaysToHours > 0) {
-        setAchievement(11, {"progress": (totalDaysToHours / 2)});
+      if (totalDaysToHours <= 4320 && totalDaysToHours > 0) {
+        setAchievement(11, {"progress": (totalDaysToHours / 4320) * 100});
       }
 
-      if (totalDaysToHours <= 360 && totalDaysToHours > 0) {
-        setAchievement(12, {"progress": (totalDaysToHours / 3)});
+      if (totalDaysToHours <= 8640 && totalDaysToHours > 0) {
+        setAchievement(12, {"progress": (totalDaysToHours / 8640) * 100});
       }
 
-      if (totalDaysToHours <= 365 && totalDaysToHours > 0) {
-        setAchievement(13, {"progress": (totalDaysToHours / 3)});
-        if ((totalDaysToHours / 3) >= 100) {
+      if (totalDaysToHours <= 8760 && totalDaysToHours > 0) {
+        double progress = (totalDaysToHours / 8760) * 100;
+
+        setAchievement(13, {"progress": progress});
+        if (progress >= 98) {
           setAchievement(17, {"progress": 100});
         }
       }
 
-      if (totalDaysToHours <= 100 && totalDaysToHours > 0) {
-        setAchievement(14, {"progress": (totalDaysToHours / 3)});
+      if (totalDaysToHours <= 2400 && totalDaysToHours > 0) {
+        setAchievement(14, {"progress": (totalDaysToHours / 2400) * 100});
       }
 
-      if (totalDaysToHours <= 200 && totalDaysToHours > 0) {
-        setAchievement(15, {"progress": (totalDaysToHours / 3)});
+      if (totalDaysToHours <= 4800 && totalDaysToHours > 0) {
+        setAchievement(15, {"progress": (totalDaysToHours / 4800) * 100});
       }
+
       if (totalDaysToHours == 0) {
         setAchievement(7, {"progress": 0});
         setAchievement(8, {"progress": 0});
@@ -404,4 +408,14 @@ Future<bool?> showConfirmationDialog(BuildContext context) async {
   //     context,
   //   ).showSnackBar(const SnackBar(content: Text('Reset canceled')));
   // }
+}
+
+Future<bool> isOnline() async {
+  var connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi) {
+    return true;
+  } else {
+    return false;
+  }
 }

@@ -54,10 +54,10 @@ class _HomeScreen extends State<HomeScreen> {
             try {
               DateTime targetDate = DateTime.parse(attrs["quit_date"]);
               DateTime currentDate = DateTime.now();
-              Duration difference = targetDate.difference(currentDate);
-              quitDays = difference.inDays;
-              quitHours = difference.inHours.remainder(24);
-              quitMinutes = difference.inMinutes.remainder(60);
+              Duration difference = currentDate.difference(targetDate);
+              quitDays = difference.inDays.abs();
+              quitHours = difference.inHours.remainder(24).abs();
+              quitMinutes = difference.inMinutes.remainder(60).abs();
             } catch (error) {
               print("Error home 1");
             }
@@ -187,6 +187,7 @@ class _HomeScreen extends State<HomeScreen> {
                     Align(
                       child: ElevatedButton(
                         onPressed: () async {
+                          print(await getAchievement(16));
                           if (smokingDiaryProgress == 100) {
                             final result = await showConfirmationDialog(
                               context,

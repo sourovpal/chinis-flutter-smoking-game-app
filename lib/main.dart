@@ -10,6 +10,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:http/http.dart' as http;
 
 Future<void> fetchData() async {
+  if (!await isOnline()) return;
+
   final prefs = await SharedPreferences.getInstance();
   final response = await http.get(
     Uri.parse('https://lst.waysapp.com/api/mobile/app'),
@@ -52,7 +54,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: '愛. 無煙',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),

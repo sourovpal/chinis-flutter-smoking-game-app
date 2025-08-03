@@ -46,7 +46,9 @@ class _SmokingDiaryScreenState extends State<SmokingDiaryScreen> {
           'yyyy-MM-dd HH:mm',
         ).parse(_quitDateController.text);
 
-        DateTime updatedDateTime = currentDateTime.add(Duration(minutes: 1));
+        DateTime updatedDateTime = currentDateTime.subtract(
+          Duration(minutes: 1),
+        );
 
         _quitDateController.text = DateFormat(
           'yyyy-MM-dd HH:mm',

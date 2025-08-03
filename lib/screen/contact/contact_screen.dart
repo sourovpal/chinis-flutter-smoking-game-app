@@ -17,7 +17,7 @@ class ContactScreen extends StatefulWidget {
 }
 
 class _ContactScreenState extends State<ContactScreen> {
-  InAppWebViewController? webViewController;
+  late InAppWebViewController webViewController;
   Map<String, dynamic> section = {};
 
   final TextEditingController _nameController = TextEditingController();
@@ -25,11 +25,32 @@ class _ContactScreenState extends State<ContactScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
   bool isLoading = false;
-
+  double webContentHeight = 0;
   @override
   void initState() {
     super.initState();
     loadData(); // async function call
+  }
+
+  Future<void> _measureContentHeight(BuildContext context) async {
+    try {
+      final contentHeight = await webViewController.evaluateJavascript(
+        source: "document.documentElement.scrollHeight",
+      );
+
+      if (contentHeight != null) {
+        final logicalHeight = double.parse(contentHeight.toString()) / 3;
+        setState(() {
+          webContentHeight = logicalHeight;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error measuring content height: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> loadData() async {
@@ -46,6 +67,7 @@ class _ContactScreenState extends State<ContactScreen> {
   }
 
   void sendContactMail() async {
+    if (!await isOnline()) return showErrorToast("您目前處於離線狀態。");
     if (isLoading) return;
 
     if (_nameController.text == "") {
@@ -112,7 +134,7 @@ class _ContactScreenState extends State<ContactScreen> {
             ),
             SizedBox(height: 15),
             SizedBox(
-              height: 200,
+              height: webContentHeight,
               width: double.infinity,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
@@ -131,6 +153,9 @@ class _ContactScreenState extends State<ContactScreen> {
                   ),
                   onWebViewCreated: (controller) {
                     webViewController = controller;
+                  },
+                  onLoadStop: (controller, url) async {
+                    await _measureContentHeight(context);
                   },
                 ),
               ),

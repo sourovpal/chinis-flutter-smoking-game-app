@@ -25,6 +25,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Future<void> _fetchNotifications() async {
+    if (!await isOnline()) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = '您目前處於離線狀態。';
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = '';

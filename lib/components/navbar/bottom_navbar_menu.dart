@@ -99,7 +99,7 @@ class _BottomNavbarMenu extends State<BottomNavbarMenu> {
       flex: 1,
       child: GestureDetector(
         onTap: () {
-          // if (navCurrentIndex == index) return;
+          if (navCurrentIndex == index) return;
           navCurrentIndex = index;
           handler(context);
         },
