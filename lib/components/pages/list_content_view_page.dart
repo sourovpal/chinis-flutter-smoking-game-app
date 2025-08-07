@@ -49,6 +49,19 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
     }
   }
 
+  bool isIos = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIsIosPhone();
+  }
+
+  Future<void> _checkIsIosPhone() async {
+    isIos = await isIosPhone();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +115,7 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
               ),
             ),
             SizedBox(
-              height: webContentHeight,
+              height: isIos ? webContentHeight + 250 : webContentHeight + 100,
               child: Padding(
                 padding: const EdgeInsets.only(
                   left: 15,
@@ -117,9 +130,9 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                           data: widget.content,
                         ),
                         initialSettings: InAppWebViewSettings(
-                          defaultFontSize: 20,
-                          defaultFixedFontSize: 20,
-                          minimumFontSize: 45,
+                          defaultFontSize: isIos ? 28 : 20,
+                          defaultFixedFontSize: isIos ? 28 : 20,
+                          minimumFontSize: isIos ? 55 : 45,
                           javaScriptEnabled: true,
                           supportZoom: true,
                           verticalScrollBarEnabled: false,

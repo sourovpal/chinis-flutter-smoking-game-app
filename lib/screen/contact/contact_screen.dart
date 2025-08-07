@@ -26,10 +26,17 @@ class _ContactScreenState extends State<ContactScreen> {
   final TextEditingController _messageController = TextEditingController();
   bool isLoading = false;
   double webContentHeight = 0;
+  bool isIos = false;
   @override
   void initState() {
     super.initState();
-    loadData(); // async function call
+    loadData();
+    _checkIsIosPhone();
+  }
+
+  Future<void> _checkIsIosPhone() async {
+    isIos = await isIosPhone();
+    setState(() {});
   }
 
   Future<void> _measureContentHeight(BuildContext context) async {
@@ -143,9 +150,9 @@ class _ContactScreenState extends State<ContactScreen> {
                     data: section["content"] ?? 0,
                   ),
                   initialSettings: InAppWebViewSettings(
-                    defaultFontSize: 20,
-                    defaultFixedFontSize: 20,
-                    minimumFontSize: 45,
+                    defaultFontSize: isIos ? 28 : 20,
+                    defaultFixedFontSize: isIos ? 28 : 20,
+                    minimumFontSize: isIos ? 55 : 45,
                     javaScriptEnabled: true,
                     supportZoom: true,
                     verticalScrollBarEnabled: false,

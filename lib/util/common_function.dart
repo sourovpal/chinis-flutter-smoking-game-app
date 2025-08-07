@@ -3,12 +3,25 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io' show Platform;
+
+Future<bool> isIosPhone() async {
+  if (kIsWeb) return false;
+
+  if (Platform.isIOS) {
+    final deviceInfo = DeviceInfoPlugin();
+    final iosInfo = await deviceInfo.iosInfo;
+    return iosInfo.model.toLowerCase().contains('iphone');
+  }
+
+  return false;
+}
 
 class PageSlideBottomToUp extends PageRouteBuilder {
   final Widget page;

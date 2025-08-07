@@ -138,11 +138,25 @@ class _BottomNavbarMenu extends State<BottomNavbarMenu> {
     );
   }
 
+  bool isIos = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIsIosPhone();
+  }
+
+  Future<void> _checkIsIosPhone() async {
+    isIos = await isIosPhone();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 60,
+      height: isIos ? 80 : 70,
+      padding: EdgeInsets.only(bottom: isIos ? 16 : 10),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

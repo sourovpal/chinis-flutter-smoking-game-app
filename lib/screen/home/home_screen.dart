@@ -198,7 +198,6 @@ class _HomeScreen extends State<HomeScreen> {
                             setBottomNavbar();
                             Navigator.pushNamed(context, "/smoking-diary");
                             return;
-                            
                           }
                           setBottomNavbar();
                           Navigator.pushNamed(context, "/smoking-diary");
@@ -312,7 +311,8 @@ class _HomeScreen extends State<HomeScreen> {
 
                   Map<String, dynamic> attrs = await getAchievement(3);
 
-                  if (attrs["last_update"] == "" ||
+                  if (attrs["last_update"] == null ||
+                      attrs["last_update"] == "" ||
                       currentDate != attrs["last_update"]) {
                     int progress3 = await getAchievementProgress(3);
                     setAchievement(3, {
