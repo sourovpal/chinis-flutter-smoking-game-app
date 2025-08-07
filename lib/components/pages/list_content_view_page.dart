@@ -127,7 +127,24 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                     ? const Center(child: CircularProgressIndicator())
                     : InAppWebView(
                         initialData: InAppWebViewInitialData(
-                          data: widget.content,
+                          data:
+                              """
+                              <!DOCTYPE html>
+                              <html>
+                              <head>
+                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                <style>
+                                  body {
+                                    font-size: ${isIos ? 100 : 100}px !important;
+                                    -webkit-text-size-adjust: ${isIos ? 100 : 100}% !important;
+                                  }
+                                </style>
+                              </head>
+                              <body>
+                                ${widget.content}
+                              </body>
+                              </html>
+                              """,
                         ),
                         initialSettings: InAppWebViewSettings(
                           defaultFontSize: isIos ? 100 : 100,
@@ -142,11 +159,6 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                           webViewController = controller;
                         },
                         onLoadStop: (controller, url) async {
-                          await controller.evaluateJavascript(
-                            source: """
-                              document.body.style.fontSize = '100px';
-                            """,
-                          );
                           await _measureContentHeight(context);
                         },
                       ),
