@@ -130,9 +130,9 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                           data: widget.content,
                         ),
                         initialSettings: InAppWebViewSettings(
-                          defaultFontSize: isIos ? 100 : 20,
-                          defaultFixedFontSize: isIos ? 100 : 20,
-                          minimumFontSize: isIos ? 100 : 45,
+                          defaultFontSize: isIos ? 100 : 100,
+                          defaultFixedFontSize: isIos ? 100 : 100,
+                          minimumFontSize: isIos ? 100 : 100,
                           javaScriptEnabled: true,
                           supportZoom: true,
                           verticalScrollBarEnabled: false,
