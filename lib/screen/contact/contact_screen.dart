@@ -18,7 +18,7 @@ class ContactScreen extends StatefulWidget {
 
 class _ContactScreenState extends State<ContactScreen> {
   late InAppWebViewController webViewController;
-  Map<String, dynamic> section = {};
+  late Map<String, dynamic> section = {};
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -31,12 +31,6 @@ class _ContactScreenState extends State<ContactScreen> {
   void initState() {
     super.initState();
     loadData();
-    _checkIsIosPhone();
-  }
-
-  Future<void> _checkIsIosPhone() async {
-    isIos = await isIosPhone();
-    setState(() {});
   }
 
   Future<void> _measureContentHeight(BuildContext context) async {
@@ -46,7 +40,7 @@ class _ContactScreenState extends State<ContactScreen> {
       );
 
       if (contentHeight != null) {
-        final logicalHeight = double.parse(contentHeight.toString()) / 3;
+        final logicalHeight = double.parse(contentHeight.toString());
         setState(() {
           webContentHeight = logicalHeight;
           isLoading = false;
@@ -61,15 +55,17 @@ class _ContactScreenState extends State<ContactScreen> {
   }
 
   Future<void> loadData() async {
+    isIos = await isIosPhone();
+
     final prefs = await SharedPreferences.getInstance();
     String? jsonString = prefs.getString('api_sections');
     if (jsonString != null) {
-      setState(() {
-        var sections = jsonDecode(jsonString);
-        if (sections['contact_us'] != null) {
+      var sections = jsonDecode(jsonString);
+      if (sections['contact_us'] != null) {
+        setState(() {
           section = sections['contact_us'];
-        }
-      });
+        });
+      }
     }
   }
 
@@ -145,26 +141,45 @@ class _ContactScreenState extends State<ContactScreen> {
               width: double.infinity,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                child: InAppWebView(
-                  initialData: InAppWebViewInitialData(
-                    data: section["content"] ?? 0,
-                  ),
-                  initialSettings: InAppWebViewSettings(
-                    defaultFontSize: isIos ? 28 : 20,
-                    defaultFixedFontSize: isIos ? 28 : 20,
-                    minimumFontSize: isIos ? 55 : 45,
-                    javaScriptEnabled: true,
-                    supportZoom: true,
-                    verticalScrollBarEnabled: false,
-                    transparentBackground: true,
-                  ),
-                  onWebViewCreated: (controller) {
-                    webViewController = controller;
-                  },
-                  onLoadStop: (controller, url) async {
-                    await _measureContentHeight(context);
-                  },
-                ),
+                child: section["content"] == null
+                    ? Center(child: Text(""))
+                    : InAppWebView(
+                        initialData: InAppWebViewInitialData(
+                          data:
+                              """
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                          <style>
+                            body {
+                              font-size: ${isIos ? 100 : 16}px !important;
+                              -webkit-text-size-adjust: ${isIos ? 100 : 100}% !important;
+                            }
+                          </style>
+                        </head>
+                        <body>
+                          ${section["content"]}
+                        </body>
+                        </html>
+                        """,
+                        ),
+                        initialSettings: InAppWebViewSettings(
+                          defaultFontSize: 20,
+                          defaultFixedFontSize: 20,
+                          minimumFontSize: 16,
+                          javaScriptEnabled: true,
+                          supportZoom: true,
+                          verticalScrollBarEnabled: false,
+                          transparentBackground: true,
+                        ),
+                        onWebViewCreated: (controller) {
+                          webViewController = controller;
+                        },
+                        onLoadStop: (controller, url) async {
+                          await _measureContentHeight(context);
+                        },
+                      ),
               ),
             ),
             SizedBox(height: 15),

@@ -35,7 +35,7 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
       );
 
       if (contentHeight != null) {
-        final logicalHeight = double.parse(contentHeight.toString()) / 3;
+        final logicalHeight = double.parse(contentHeight.toString());
         setState(() {
           webContentHeight = logicalHeight + 100;
           isLoading = false;
@@ -115,7 +115,7 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
               ),
             ),
             SizedBox(
-              height: isIos ? webContentHeight + 250 : webContentHeight + 100,
+              height: isIos ? webContentHeight + 100 : webContentHeight + 50,
               child: Padding(
                 padding: const EdgeInsets.only(
                   left: 15,
@@ -135,7 +135,7 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                                 <style>
                                   body {
-                                    font-size: ${isIos ? 100 : 100}px !important;
+                                    font-size: ${isIos ? 100 : 16}px !important;
                                     -webkit-text-size-adjust: ${isIos ? 100 : 100}% !important;
                                   }
                                 </style>
@@ -147,9 +147,9 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                               """,
                         ),
                         initialSettings: InAppWebViewSettings(
-                          defaultFontSize: isIos ? 100 : 100,
-                          defaultFixedFontSize: isIos ? 100 : 100,
-                          minimumFontSize: isIos ? 100 : 100,
+                          defaultFontSize: 20,
+                          defaultFixedFontSize: 20,
+                          minimumFontSize: 16,
                           javaScriptEnabled: true,
                           supportZoom: true,
                           verticalScrollBarEnabled: false,
