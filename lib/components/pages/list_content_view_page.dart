@@ -142,6 +142,11 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                           webViewController = controller;
                         },
                         onLoadStop: (controller, url) async {
+                          await controller.evaluateJavascript(
+                            source: """
+                              document.body.style.fontSize = '100px';
+                            """,
+                          );
                           await _measureContentHeight(context);
                         },
                       ),
