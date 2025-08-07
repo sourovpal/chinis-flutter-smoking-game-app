@@ -153,7 +153,7 @@ class _ContactScreenState extends State<ContactScreen> {
                           <meta name="viewport" content="width=device-width, initial-scale=1.0">
                           <style>
                             body {
-                              font-size: ${isIos ? 100 : 16}px !important;
+                              font-size: ${isIos ? 16 : 16}px !important;
                               -webkit-text-size-adjust: ${isIos ? 100 : 100}% !important;
                             }
                           </style>
