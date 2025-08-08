@@ -6,6 +6,7 @@ import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -16,6 +17,7 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   bool _isLoading = true;
+  bool _allowNotification = true;
   String _errorMessage = '';
   List<Map<String, dynamic>> _notifications = [];
 
@@ -25,7 +27,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
     _fetchNotifications();
   }
 
+  void _toggleNotification(String stage) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("allwo_notification", stage);
+  }
+
   Future<void> _fetchNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getString("allwo_notification") != "off") {
+      setState(() {
+        _allowNotification = true;
+      });
+    } else {
+      setState(() {
+        _allowNotification = false;
+      });
+    }
+
     if (!await isOnline()) {
       setState(() {
         _isLoading = false;
@@ -93,6 +111,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   Container(
                     width: double.infinity,
                     height: 100,
+                    padding: EdgeInsets.only(left: 0, right: 10, top: 0),
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(
@@ -100,6 +119,30 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         ),
                         fit: BoxFit.fill,
                       ),
+                    ),
+                    alignment: Alignment.centerRight,
+                    child: Switch(
+                      // activeColor: Colors.green,
+                      activeColor: Colors.white,
+                      activeTrackColor: Colors.green,
+                      inactiveThumbColor: Colors.white,
+                      inactiveTrackColor: Colors.grey,
+                      trackOutlineColor: WidgetStateProperty.resolveWith<Color>(
+                        (states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return Colors.green;
+                          }
+                          return Colors.grey;
+                        },
+                      ),
+                      value: _allowNotification,
+                      onChanged: (bool value) async {
+                        _toggleNotification(value ? "on" : "off");
+                        if (!mounted) return;
+                        setState(() {
+                          _allowNotification = value;
+                        });
+                      },
                     ),
                   ),
                   SizedBox(height: 15),

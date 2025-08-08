@@ -31,7 +31,12 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.instance.subscribeToTopic('all_users');
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getString("allwo_notification") == "off") return;
+    print("==========================");
+    print(prefs.getString("allwo_notification"));
+    print("==========================");
     NotificationService().showNotification(
       title: message.notification?.title,
       body: message.notification?.body,
