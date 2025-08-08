@@ -5,6 +5,7 @@ import 'package:game_app/components/Background/full_screen_background.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -63,6 +64,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
         _isLoading = false;
       });
     }
+  }
+
+  String _dateFormater(String datetime) {
+    DateTime dateTime = DateTime.parse(datetime);
+    return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
   }
 
   @override
@@ -137,14 +143,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           ),
                                         ),
                                       ),
-                                    if (notification["date"] != null)
+                                    if (notification["created_at"] != null)
                                       Padding(
                                         padding: EdgeInsets.only(top: 8),
                                         child: Text(
-                                          notification["date"],
+                                          _dateFormater(
+                                            notification["created_at"],
+                                          ),
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: Colors.grey,
+                                            color: Colors.grey[500],
                                           ),
                                         ),
                                       ),
