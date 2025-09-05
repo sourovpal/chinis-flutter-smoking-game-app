@@ -8,6 +8,7 @@ import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
@@ -172,6 +173,8 @@ class _ContactScreenState extends State<ContactScreen> {
                           supportZoom: true,
                           verticalScrollBarEnabled: false,
                           transparentBackground: true,
+                          thirdPartyCookiesEnabled: true,
+                          clearCache: false,
                         ),
                         onWebViewCreated: (controller) {
                           webViewController = controller;
@@ -179,6 +182,22 @@ class _ContactScreenState extends State<ContactScreen> {
                         onLoadStop: (controller, url) async {
                           await _measureContentHeight(context);
                         },
+                        shouldOverrideUrlLoading:
+                            (controller, navigationAction) async {
+                              final uri = navigationAction.request.url;
+
+                              if (uri != null &&
+                                  navigationAction.isForMainFrame) {
+                                if (await canLaunchUrl(uri)) {
+                                  await launchUrl(
+                                    uri,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                  return NavigationActionPolicy.CANCEL;
+                                }
+                              }
+                              return NavigationActionPolicy.ALLOW;
+                            },
                       ),
               ),
             ),

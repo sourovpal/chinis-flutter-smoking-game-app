@@ -53,7 +53,13 @@ class _GameScreenState extends State<GameScreen> {
               width: double.infinity,
               height: 750,
               constraints: BoxConstraints(minHeight: screenHeight(context)),
-              child: InAppWebView(initialFile: "assets/game/index.html"),
+              child: InAppWebView(
+                initialFile: "assets/game/index.html",
+                initialSettings: InAppWebViewSettings(
+                  thirdPartyCookiesEnabled: true,
+                  clearCache: false,
+                ),
+              ),
             ),
           ],
         ),

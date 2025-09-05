@@ -4,6 +4,7 @@ import 'package:game_app/components/Background/full_screen_background.dart';
 import 'package:game_app/components/navbar/bottom_navbar_menu.dart';
 import 'package:game_app/util/common_function.dart';
 import 'package:game_app/util/common_veriable.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ListContentViewPage extends StatefulWidget {
   const ListContentViewPage({
@@ -154,6 +155,8 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                           supportZoom: true,
                           verticalScrollBarEnabled: false,
                           transparentBackground: true,
+                          thirdPartyCookiesEnabled: true,
+                          clearCache: false,
                         ),
                         onWebViewCreated: (controller) {
                           webViewController = controller;
@@ -161,6 +164,22 @@ class _ListContentViewPageState extends State<ListContentViewPage> {
                         onLoadStop: (controller, url) async {
                           await _measureContentHeight(context);
                         },
+                        shouldOverrideUrlLoading:
+                            (controller, navigationAction) async {
+                              final uri = navigationAction.request.url;
+
+                              if (uri != null &&
+                                  navigationAction.isForMainFrame) {
+                                if (await canLaunchUrl(uri)) {
+                                  await launchUrl(
+                                    uri,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                  return NavigationActionPolicy.CANCEL;
+                                }
+                              }
+                              return NavigationActionPolicy.ALLOW;
+                            },
                       ),
               ),
             ),

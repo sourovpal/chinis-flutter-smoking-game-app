@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.18.0
   device_info_plus: ^9.0.0
   connectivity_plus: ^5.0.2
+  url_launcher: ^6.3.0
 
 
 dev_dependencies:
