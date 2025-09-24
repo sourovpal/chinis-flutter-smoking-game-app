@@ -28,7 +28,7 @@ class _ResultScreenState extends State<ResultScreen> {
       attributes = {
         "title": "偏高",
         "description":
-            "您對尼古丁的依賴程度中等。如果您不盡快戒煙，您對尼古丁的依賴程度將會增加，直到您可能嚴重上癮。立即採取行動，結束對尼古丁的依賴。",
+            "您的依賴程度很高。您無法控制吸煙-它可以控制您！當您決定戒煙時，您可以嘗試用尼古丁替代或其他藥物，以幫助您戒掉煙癮。",
         "primary": Colors.red,
         "secondary": Colors.red[700],
       };
@@ -36,7 +36,7 @@ class _ResultScreenState extends State<ResultScreen> {
       attributes = {
         "title": "中等",
         "description":
-            "您的依賴程度很高。您無法控制吸煙-它可以控制您！當您決定戒煙時，您可以嘗試用尼古丁替代或其他藥物，以幫助您戒掉煙癮。",
+            "您對尼古丁的依賴程度中等。如果您不盡快戒煙，您對尼古丁的依賴程度將會增加，直到您可能嚴重上癮。立即採取行動，結束對尼古丁的依賴。",
         "primary": Colors.orange,
         "secondary": Colors.orange[700],
       };
